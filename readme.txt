@@ -1,0 +1,1 @@
+Utilizes the ANT-SDK_PC.3.5 SDK - specifically the c++ ANT_DLL
