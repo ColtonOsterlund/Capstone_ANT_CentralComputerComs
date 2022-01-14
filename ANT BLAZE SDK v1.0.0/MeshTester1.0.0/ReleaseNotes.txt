@@ -1,0 +1,8 @@
+RELEASE NOTES
+*****************************************************
+Version: 1.0
+Date: June 2017
+Gateway Library Compatibility: v1.0
+Notes: The included ANT_NET.dll and ANT_WrappedLib.dll files must be
+used instead of those available in the ANT PC SDK.
+*****************************************************

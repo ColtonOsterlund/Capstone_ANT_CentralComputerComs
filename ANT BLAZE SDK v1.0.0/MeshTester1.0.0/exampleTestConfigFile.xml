@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestConfiguration>
+    <NumberOfTestCycles type="System.UInt32">50</NumberOfTestCycles>
+    <MaxPingWaitTimeInMs type="System.UInt32">5000</MaxPingWaitTimeInMs>
+    <StartTimeDelayInMs type="System.Uint32">10000</StartTimeDelayInMs>
+    <NumberOfPacketsPerResponse type="System.Byte">5</NumberOfPacketsPerResponse>
+    <NumberOfNodesToPingPerRequest type="System.UInt32">2</NumberOfNodesToPingPerRequest>
+    <SplitLogFiles type="System.Boolean">false</SplitLogFiles>
+    <NumberOfCyclesPerLogFile type="System.UInt32">50</NumberOfCyclesPerLogFile>
+    <EchoPayload type="System.Boolean">false</EchoPayload>
+    <PayloadBytesToEcho type="System.Byte[]">01-02-03-04-05</PayloadBytesToEcho>
+</TestConfiguration>
