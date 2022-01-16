@@ -1,10 +1,8 @@
-﻿  libant.cpp
-  CentralComputerComs.cpp
+﻿  CentralComputerComs.cpp
 C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\CentralComputerComs\CentralComputerComs.cpp(157,15): warning C4477: 'scanf' : format string '%u' requires an argument of type 'unsigned int *', but variadic argument 1 has type 'UCHAR *'
 C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\CentralComputerComs\CentralComputerComs.cpp(157,15): message : consider using '%hhu' in the format string
 C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\CentralComputerComs\CentralComputerComs.cpp(160,20): warning C4477: 'sscanf' : format string '%u' requires an argument of type 'unsigned int *', but variadic argument 1 has type 'UCHAR *'
 C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\CentralComputerComs\CentralComputerComs.cpp(160,20): message : consider using '%hhu' in the format string
 C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\CentralComputerComs\CentralComputerComs.cpp(211,24): warning C4477: 'sscanf' : format string '%u' requires an argument of type 'unsigned int *', but variadic argument 1 has type 'UCHAR *'
 C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\CentralComputerComs\CentralComputerComs.cpp(211,24): message : consider using '%hhu' in the format string
-  Generating Code...
   CentralComputerComs.vcxproj -> C:\Users\colto\Documents\Programming\Programming Repositories\Capstone_ANT_CentralComputerComs\CentralComputerComs\Debug\CentralComputerComs.exe

@@ -7,7 +7,7 @@ Copyright (c) Dynastream Innovations Inc. 2016
 All rights reserved.
 */
 
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 1 //this is to silence the warning about scanf not being safe - *look into this*
 
 #include <stdio.h>
 #include <assert.h>
