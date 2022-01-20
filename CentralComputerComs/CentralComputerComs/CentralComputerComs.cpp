@@ -9,6 +9,9 @@ All rights reserved.
 
 #define _CRT_SECURE_NO_WARNINGS 1 //this is to silence the warning about scanf not being safe - *look into this*
 
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
+
 #include <stdio.h>
 #include <assert.h>
 
