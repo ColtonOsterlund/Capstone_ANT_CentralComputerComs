@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "f9e0093a-d571-48f8-b2f5-62450f1ad3ca": {
+      "ProjectGuid": "f9e0093a-d571-48f8-b2f5-62450f1ad3ca",
+      "DisplayName": "DEMO_HR_RECEIVER",
+      "ColorIndex": 0
+    },
+    "6c281d9f-e801-46a7-b6ad-bf5f40615f2a": {
+      "ProjectGuid": "6c281d9f-e801-46a7-b6ad-bf5f40615f2a",
+      "DisplayName": "DEMO_HR_TRANSMITTER",
+      "ColorIndex": 1
+    },
+    "491fdd5b-a409-4fcd-afca-12e0343cc7a2": {
+      "ProjectGuid": "491fdd5b-a409-4fcd-afca-12e0343cc7a2",
+      "DisplayName": "DEMO_LIB",
+      "ColorIndex": 2
+    }
+  },
+  "NextColorIndex": 3
+}

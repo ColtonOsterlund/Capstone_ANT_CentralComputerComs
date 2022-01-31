@@ -29,15 +29,17 @@ All rights reserved.
 #define ENABLE_EXTENDED_MESSAGES // Un - comment to enable extended messages.
 
 #define USER_BAUDRATE            (57600)  // For AP1, use 50000; for AT3/AP2, use 57600
-#define USER_RADIOFREQ           (35)     // RF Frequency + 2400 MHz
+#define USER_RADIOFREQ           (66)     // RF Frequency + 2400 MHz
 
 #define USER_ANTCHANNEL          (0)      // ANT channel to use
-#define USER_DEVICENUM           (49)     // Device number
-#define USER_DEVICETYPE          (1)      // Device type
-#define USER_TRANSTYPE           (1)      // Transmission type
+#define USER_DEVICENUM           (0)     // Device number
+#define USER_DEVICETYPE          (3)      // Device type
+#define USER_TRANSTYPE           (2)      // 2 = 1-Byte Shared Address Transmission type
 
 #define USER_NETWORK_KEY         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,}
 #define USER_NETWORK_NUM         (0)      // The network key is assigned to this network number
+
+#define USER_CHANNEL_TYPE        (0x30)   // 0x30 = Shared Transmit Channel
 
 
 #define MAX_CHANNEL_EVENT_SIZE   (MESG_MAX_SIZE_VALUE)     // Channel event buffer size, assumes worst case extended message size
@@ -62,81 +64,66 @@ All rights reserved.
 
 
 
+
 // Local Variables
-static UCHAR ucChannelType;               // Channel type as chosen by user (master or slave)
 static UCHAR aucChannelBuffer[MAX_CHANNEL_EVENT_SIZE];
 static UCHAR aucResponseBuffer[MAX_RESPONSE_SIZE];
 static UCHAR aucTransmitBuffer[ANT_STANDARD_DATA_PAYLOAD_SIZE];
-static BOOL bDone;
-static BOOL bDisplay;
-static BOOL bBroadcasting;
 static UCHAR ucDeviceNumber;
+static bool bBroadcasting;
+static bool bDisplay;
+static bool bDone;
 
 
 // Declare callback functions into the library.
-static BOOL Test_ChannelCallback(UCHAR ucChannel_, UCHAR ucEvent_);
-static BOOL Test_ResponseCallback(UCHAR ucChannel_, UCHAR ucMessageId_);
-static void PrintMenu();
+static BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_);
+static BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_);
 
 
-////////////////////////////////////////////////////////////////////////////////
-// main
-//
-// Usage:
-//
-// c:\DEMO_DLL.exe [device_no] [channel_type]
-//
-// ... where
-//
-// device_no:     USB Device port, starting at 0
-// channel_type:  Master = 0, Slave = 1
-//
-// ... example
-//
-// c:\Demo_DLL.exe 0 0
-//
-// Comment to USB port 0 and open a Master channel
-//
-// If optional arguements are not supplied, user will
-// be prompted to enter these after the program starts.
-//
-////////////////////////////////////////////////////////////////////////////////
+//Declare functions for our application
+void Program_Init(UCHAR ucDeviceNumber_);
+void Program_Start();
+
+
+
 int main(int argc, char** argv)
 {
 
-    ucDeviceNumber = 0xFF;
-    UCHAR ucChannelType = CHANNEL_TYPE_INVALID;
+    ucDeviceNumber = 0xFF; //This indicates which of the plugged in USB ANT devices you'd like to use - starting at 0
 
 
     if (argc > 2)
     {
         ucDeviceNumber = (UCHAR)atoi(argv[1]);
-        ucChannelType = (UCHAR)atoi(argv[2]);
 
     }
 
-    Test_Init(ucDeviceNumber, ucChannelType);
-    Test_Start();
+    Program_Init(ucDeviceNumber);
+    Program_Start();
     return 0;
 }
 
 
 
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
-// Test_Init
+// Program_Init
 //
-// Initialize test parameters.
+// Initialize program parameters.
 //
 // ucDeviceNumber_: USB Device Number (0 for first USB stick plugged and so on)
 //                  If not specified on command line, 0xFF is passed in as invalid.
-// ucChannelType_:  ANT Channel Type. 0 = Master, 1 = Slave
-//                  If not specified, 2 is passed in as invalid.
 //
 ////////////////////////////////////////////////////////////////////////////////
-void Test_Init(UCHAR ucDeviceNumber_, UCHAR ucChannelType_)
+void Program_Init(UCHAR ucDeviceNumber_)
 {
 
     BOOL bStatus;
+    bBroadcasting = true; //turn on broadcasting
+    bDisplay = true; //turn on console message display
+    bDone = false; //test will run until this flag is switched
 
     // Load the ANT DLL functions.
     if (!ANT_Load())
@@ -163,10 +150,6 @@ void Test_Init(UCHAR ucDeviceNumber_, UCHAR ucChannelType_)
         sscanf(st, "%u", &ucDeviceNumber_);
     }
 
-    ucChannelType = ucChannelType_;
-    bDone = FALSE;
-    bDisplay = TRUE;
-    bBroadcasting = FALSE;
 
     // The device number depends on how many USB sticks have been
     // plugged into the PC. The first USB stick plugged will be 0
@@ -182,8 +165,8 @@ void Test_Init(UCHAR ucDeviceNumber_, UCHAR ucChannelType_)
     // its own callback function defined. Since we are only
     // going to open one channel, setup one callback function
     // for the channel callback
-    ANT_AssignResponseFunction(Test_ResponseCallback, aucResponseBuffer);
-    ANT_AssignChannelEventFunction(USER_ANTCHANNEL, Test_ChannelCallback, aucChannelBuffer);
+    ANT_AssignResponseFunction(ANT_DLL_Serial_Callback, aucResponseBuffer); //Serial callback
+    ANT_AssignChannelEventFunction(USER_ANTCHANNEL, ANT_MessageProtocol_Callback, aucChannelBuffer); //Channel callback
 
     printf("Initialization was successful!\n"); fflush(stdout);
 
@@ -192,33 +175,13 @@ void Test_Init(UCHAR ucDeviceNumber_, UCHAR ucChannelType_)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Test_Start
+// Program_Start
 //
-// Start the Test program.
+// Start the program.
 //
 ////////////////////////////////////////////////////////////////////////////////
-void Test_Start()
+void Program_Start()
 {
-    // Print out the menu to start
-    PrintMenu();
-
-    // If the channel type has not been set at the command line,
-    // prompt the user to specify now.
-    do
-    {
-        if (ucChannelType == CHANNEL_TYPE_INVALID)
-        {
-            printf("Channel Type? (Master = 0, Slave = 1)\n");
-            char st[1024];
-            fgets(st, sizeof(st), stdin);
-            sscanf(st, "%u", &ucChannelType);
-        }
-        if (ucChannelType != 0 && ucChannelType != 1)
-        {
-            ucChannelType = CHANNEL_TYPE_INVALID;
-            printf("Error: invalid channel type\n");
-        }
-    } while (ucChannelType == CHANNEL_TYPE_INVALID);
 
     // Reset system
     printf("Resetting module...\n");
@@ -240,19 +203,11 @@ void Test_Start()
 
         switch (ucChar)
         {
-        case 'M':
-        case 'm':
-        {
-            // Printout options
-            PrintMenu();
-            break;
-        }
         case 'Q':
         case 'q':
         {
             // Quit
             printf("Closing channel...\n");
-            bBroadcasting = FALSE;
             ANT_CloseChannel(USER_ANTCHANNEL);
             break;
         }
@@ -264,99 +219,9 @@ void Test_Start()
             ANT_SendAcknowledgedData(USER_ANTCHANNEL, aucTempBuffer);
             break;
         }
-        case 'B':
-        case 'b':
-        {
-            // Send Burst Data (10 packets)
-            UCHAR aucTempBuffer[8 * 10];
-
-            for (int i = 0; i < 8 * 10; i++)
-                aucTempBuffer[i] = i;
-
-            ANT_SendBurstTransfer(USER_ANTCHANNEL, aucTempBuffer, 10);
-            break;
-        }
-
-        case 'r':
-        case 'R':
-        {
-            // Reset system
-            printf("Resetting module...\n");
-            ANT_ResetSystem();         // Soft reset
-            ANT_Nap(1000);             // Need to delay after a reset
-
-            // Restart the test by setting network key
-            printf("Setting network key...\n");
-            ANT_SetNetworkKey(USER_NETWORK_NUM, ucNetKey);
-            break;
-        }
-
-        case 'c':
-        case 'C':
-        {
-            // Request capabilites.
-            ANT_RequestMessage(USER_ANTCHANNEL, MESG_CAPABILITIES_ID);
-            break;
-        }
-        case 'v':
-        case 'V':
-        {
-            // Request version
-            ANT_RequestMessage(USER_ANTCHANNEL, MESG_VERSION_ID);
-            break;
-        }
-        case 'S':
-        case 's':
-        {
-            // Request channel status
-            ANT_RequestMessage(USER_ANTCHANNEL, MESG_CHANNEL_STATUS_ID);
-            break;
-        }
-
-        case 'I':
-        case 'i':
-        {
-            // Request channel ID
-            ANT_RequestMessage(USER_ANTCHANNEL, MESG_CHANNEL_ID_ID);
-            break;
-
-        }
-        case 'd':
-        case 'D':
-        {
-            bDisplay = !bDisplay;
-
-            break;
-        }
-        case 'u':
-        case 'U':
-        {
-            // Print out information about the USB device we are connected to
-            printf("USB Device Description\n");
-            USHORT usDevicePID;
-            USHORT usDeviceVID;
-            UCHAR aucDeviceDescription[256];
-            UCHAR aucDeviceSerial[256];
-            // Retrieve info
-            if (ANT_GetDeviceUSBVID(&usDeviceVID))
-            {
-                printf("  VID: 0x%X\n", usDeviceVID);
-            }
-            if (ANT_GetDeviceUSBPID(&usDevicePID))
-            {
-                printf("  PID: 0x%X\n", usDevicePID);
-            }
-            if (ANT_GetDeviceUSBInfo(ucDeviceNumber, aucDeviceDescription, aucDeviceSerial))
-            {
-                printf("  Product Description: %s\n", aucDeviceDescription);
-                printf("  Serial String: %s\n", aucDeviceSerial);
-            }
-            break;
-        }
         default:
         {
             break;
-
         }
         }
         ANT_Nap(0);
@@ -366,7 +231,7 @@ void Test_Start()
     printf("Disconnecting module...\n");
     ANT_Close();
 
-    printf("Demo has completed successfully!\n");
+    printf("Program has completed successfully!\n");
 
     return;
 }
@@ -374,7 +239,7 @@ void Test_Start()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Test_ChannelCallback
+// ANT_MessageProtocol_Callback
 //
 // Callback function passed to ANT DLL. Called whenever a channel event
 // is recieved.
@@ -382,7 +247,7 @@ void Test_Start()
 // ucChannel_: Channel number of event
 // ucEvent_: Channel event as described in section 9.5.6 of the messaging document
 ////////////////////////////////////////////////////////////////////////////////
-BOOL Test_ChannelCallback(UCHAR ucChannel_, UCHAR ucEvent_)
+BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_)
 {
 
     BOOL bPrintBuffer = FALSE;
@@ -395,9 +260,9 @@ BOOL Test_ChannelCallback(UCHAR ucChannel_, UCHAR ucEvent_)
         // This event indicates that a message has just been
         // sent over the air. We take advantage of this event to set
         // up the data for the next message period.
-        static UCHAR ucIncrement = 0;      // Increment the first byte of the buffer
+        //static UCHAR ucIncrement = 0;      // Increment the first byte of the buffer
 
-        aucTransmitBuffer[0] = ucIncrement++;
+       // aucTransmitBuffer[0] = ucIncrement++;
 
         // Broadcast data will be sent over the air on
         // the next message period.
@@ -610,7 +475,7 @@ BOOL Test_ChannelCallback(UCHAR ucChannel_, UCHAR ucEvent_)
 // ucChannel_: Channel number of relevent to the message
 // ucMessageId_: Message ID of the message recieved from ANT.
 ////////////////////////////////////////////////////////////////////////////////
-BOOL Test_ResponseCallback(UCHAR ucChannel_, UCHAR ucMessageId_)
+BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_)
 {
     BOOL bSuccess = FALSE;
 
@@ -741,12 +606,12 @@ BOOL Test_ResponseCallback(UCHAR ucChannel_, UCHAR ucMessageId_)
             }
             printf("Network key set\n");
             printf("Assigning channel...\n");
-
-            if (ucChannelType == CHANNEL_TYPE_MASTER)
+             
+            if (1) //MASTER
             {
                 bSuccess = ANT_AssignChannel(USER_ANTCHANNEL, PARAMETER_TX_NOT_RX, USER_NETWORK_NUM);
             }
-            else if (ucChannelType == CHANNEL_TYPE_SLAVE)
+            else if (0) //SLAVE
             {
                 bSuccess = ANT_AssignChannel(USER_ANTCHANNEL, 0, USER_NETWORK_NUM);
             }
@@ -873,41 +738,3 @@ BOOL Test_ResponseCallback(UCHAR ucChannel_, UCHAR ucMessageId_)
     }
     return(TRUE);
 }
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// PrintMenu
-//
-// Start the Test program.
-//
-////////////////////////////////////////////////////////////////////////////////
-void PrintMenu()
-{
-    // Printout options
-    printf("\n");
-    printf("M - Print this menu\n");
-    printf("A - Send Acknowledged message\n");
-    printf("B - Send Burst message\n");
-    printf("R - Reset\n");
-    printf("C - Request Capabilites\n");
-    printf("V - Request Version\n");
-    printf("I - Request Channel ID\n");
-    printf("S - Request Status\n");
-    printf("U - Request USB Descriptor\n");
-    printf("D - Toggle Display\n");
-    printf("Q - Quit\n");
-    printf("\n");
-    fflush(stdout);
-}
-
-
-
-
-
-
-
-
-
-

@@ -23,19 +23,19 @@
     <ClInclude Include="ant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\modules\ant-lib\inc\antdefines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\modules\ant-lib\inc\antmessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\modules\ant-lib\inc\types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\modules\ant-lib\inc\version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\antdefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\antmessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
