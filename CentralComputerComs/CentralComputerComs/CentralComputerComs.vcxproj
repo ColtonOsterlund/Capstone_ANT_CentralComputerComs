@@ -142,7 +142,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ANT-SDK_PC.3.5\DEMO_DLL\libant.cpp" />
+    <ClCompile Include="Message.cpp" />
     <ClCompile Include="CentralComputerComs.cpp" />
+    <ClCompile Include="MessageQueue.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
