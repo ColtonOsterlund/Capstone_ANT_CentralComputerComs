@@ -1,13 +1,12 @@
 #include "Message.h"
 
 
-Message::Message(unsigned char* message, int length) {
-	this->id = message[0];
+Message::Message(int id, unsigned char* message, int length) {
+	this->id = id;
 	this->length = length;
 	this->data = new unsigned char[length];
 
-	// Copy everything except the first byte
-	for (int i = 1; i < length; i++) {
+	for (int i = 0; i < length; i++) {
 		this->data[i] = message[i];
 	}
 }

@@ -86,7 +86,7 @@ void Program_Start();
 
 
 
-int main(int argc, char** argv)
+int not_main(int argc, char** argv)
 {
 
     ucDeviceNumber = 0xFF; //This indicates which of the plugged in USB ANT devices you'd like to use - starting at 0

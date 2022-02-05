@@ -6,8 +6,8 @@
 class Message
 {
 public:
-	// Expects messages to be have the first byte be the message id and the following bytes be the message data.
-	Message(unsigned char* message, int length);
+	// Length is the length of the data array
+	Message(int id, unsigned char* data, int length);
 	~Message();
 	Message(const Message& m1);
 	unsigned char get_id();
