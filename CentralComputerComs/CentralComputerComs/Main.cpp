@@ -1,6 +1,10 @@
+
 #include <thread>
 #include <iostream>
+
 #include "MessageQueue.h"
+#include "ANTThread.h"
+#include "WebSocketThread.h"
 
 void mock_function(MessageQueue& RxQueue, MessageQueue& TxQueue) {
 	std::cout << "mocking threads" << std::endl;
@@ -13,9 +17,12 @@ int main() {
 	MessageQueue WebRxQueue;
 	MessageQueue WebTxQueue;
 
-	std::thread ant_thread(mock_function, std::ref(ANTRxQueue), std::ref(ANTTxQueue));
-	std::thread web_thread(mock_function, std::ref(WebRxQueue), std::ref(WebTxQueue));
+	ANTThread ant_thread = ANTThread(&ANTRxQueue, &ANTTxQueue);
+	WebSocketThread web_thread = WebSocketThread(&WebRxQueue, &WebTxQueue);
+
+	std::thread main_ant_thread(ant_thread);
+	std::thread main_web_thread(web_thread);
 	
-	ant_thread.join();
-	web_thread.join();
+	main_ant_thread.join();
+	main_web_thread.join();
 }
