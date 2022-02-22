@@ -21,7 +21,7 @@
     <ClCompile Include="..\..\ANT-SDK_PC.3.5\DEMO_DLL\libant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Message.cpp">
+    <ClCompile Include="ANTMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MessageQueue.cpp">
@@ -33,10 +33,10 @@
     <ClCompile Include="WebSocketThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebSocketWrapper.cpp">
+    <ClCompile Include="WebSocketServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebSocketMessageHandler.cpp">
+    <ClCompile Include="WebSocketQueueHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ANTThread.cpp">
@@ -45,9 +45,18 @@
     <ClCompile Include="SendReceiveQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MainThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralComputerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebSocketMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Message.h">
+    <ClInclude Include="ANTMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MessageQueue.h">
@@ -56,16 +65,25 @@
     <ClInclude Include="WebSocketThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebSocketWrapper.h">
+    <ClInclude Include="WebSocketServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebSocketMessageHandler.h">
+    <ClInclude Include="WebSocketQueueHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ANTThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SendReceiveQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralComputerThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WebSocketMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

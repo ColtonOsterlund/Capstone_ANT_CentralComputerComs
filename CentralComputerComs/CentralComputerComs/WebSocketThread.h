@@ -1,15 +1,25 @@
 #pragma once
 
-#include "MessageQueue.h"
+#include <thread>
 
-class WebSocketThread
+#include "CentralComputerThread.h"
+#include "WebSocketServer.h"
+#include "WebSocketQueueHandler.h"
+#include "WebSocketMessage.h"
+#include "SendReceiveQueue.h"
+
+class WebSocketThread: public CentralComputerThread
 {
 public:
-	WebSocketThread(MessageQueue* RxQueue, MessageQueue* TxQueue);
+	WebSocketThread(SendReceiveQueue<WebSocketMessage>* queues);
 	
 	// Allow the class to be callable as a thread
-	void operator()();
+	void operator()() override;
+
+	void request_termination() override;
 
 private:
+	WebSocketServer socket_server;
+	WebSocketQueueHandler queue_handler;
 };
 

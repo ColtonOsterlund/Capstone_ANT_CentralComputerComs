@@ -1,11 +1,13 @@
 #pragma once
 
-#include "MessageQueue.h"
+#include "ANTMessage.h"
+#include "SendReceiveQueue.h"
+#include "CentralComputerThread.h"
 
-class ANTThread
+class ANTThread: public CentralComputerThread
 {
 public:
-	ANTThread(MessageQueue* RxQueue, MessageQueue* TxQueue);
+	ANTThread(SendReceiveQueue<ANTMessage>* queues);
 
 	// Allow the class to be callable as a thread
 	void operator()();

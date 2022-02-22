@@ -3,11 +3,10 @@
 #include <queue>
 #include <mutex>
 
-#include "Message.h"
-
 /*
 * Thread-safe queue implementation for passing message between threads.
 */
+template <class T>
 class MessageQueue
 {
 public:
@@ -17,14 +16,14 @@ public:
 	/*
 	* Adds the passed message to the queue
 	*/
-	void push(Message message);
+	void push(T message);
 
 	/*
 	* Pops the next message in the queue and returns it
 	* 
 	* The caller MUST check if the queue is empty before calling this function.
 	*/
-	Message pop();
+	T pop();
 
 	/*
 	* Returns true if the queue is empty and false otherwise.
@@ -32,7 +31,7 @@ public:
 	bool is_empty();
 	
 private:
-	std::queue<Message> queue;
+	std::queue<T> queue;
 	std::mutex queue_mutex;
 };
 

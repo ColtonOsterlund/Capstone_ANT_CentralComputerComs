@@ -1,7 +1,7 @@
-#include "Message.h"
+#include "ANTMessage.h"
 
 
-Message::Message(int id, unsigned char* message, int length) {
+ANTMessage::ANTMessage(int id, unsigned char* message, int length) {
 	this->id = id;
 	this->length = length;
 	this->data = new unsigned char[length];
@@ -11,10 +11,10 @@ Message::Message(int id, unsigned char* message, int length) {
 	}
 }
 
-Message::~Message() {
+ANTMessage::~ANTMessage() {
 	delete this->data;
 }
-Message::Message(const Message& m1)
+ANTMessage::ANTMessage(const ANTMessage& m1)
 {
 	this->id = m1.id;
 	this->length = m1.length;
@@ -25,5 +25,5 @@ Message::Message(const Message& m1)
 	}
 }
 
-unsigned char Message::get_id() { return this->id; }
-unsigned char* Message::get_data() { return this->data; }
+unsigned char ANTMessage::get_id() { return this->id; }
+unsigned char* ANTMessage::get_data() { return this->data; }

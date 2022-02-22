@@ -3,7 +3,7 @@
 
 #include "ANTThread.h"
 
-ANTThread::ANTThread(MessageQueue* RxQueue, MessageQueue* TxQueue)
+ANTThread::ANTThread(SendReceiveQueue<ANTMessage>* queues)
 {
 
 }

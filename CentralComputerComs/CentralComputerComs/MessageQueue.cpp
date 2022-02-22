@@ -1,24 +1,29 @@
 #include "MessageQueue.h"
 
-MessageQueue::MessageQueue() : queue(), queue_mutex() {}
+template<class T>
+MessageQueue<T>::MessageQueue() : queue(), queue_mutex() {}
 
-MessageQueue::~MessageQueue() {}
+template<class T>
+MessageQueue<T>::~MessageQueue() {}
 
-void MessageQueue::push(Message message)
+template<class T>
+void MessageQueue<T>::push(T message)
 {
 	std::lock_guard<std::mutex> guard(queue_mutex);
 	queue.push(message);
 }
 
-Message MessageQueue::pop()
+template<class T>
+T MessageQueue<T>::pop()
 {
 	std::lock_guard<std::mutex> guard(queue_mutex);
-	Message m = queue.front();
+	T m = queue.front();
 	queue.pop();
 	return m;
 }
 
-bool MessageQueue::is_empty()
+template<class T>
+bool MessageQueue<T>::is_empty()
 {
 	std::lock_guard<std::mutex> guard(queue_mutex);
 	return queue.empty();

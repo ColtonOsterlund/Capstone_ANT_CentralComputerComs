@@ -9,9 +9,6 @@ All rights reserved.
 
 #define _CRT_SECURE_NO_WARNINGS 1 //this is to silence the warning about scanf not being safe - *look into this*
 
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/server.hpp>
-
 #include <stdio.h>
 #include <assert.h>
 
@@ -61,7 +58,6 @@ All rights reserved.
 #define MESSAGE_BUFFER_DATA12_INDEX ((UCHAR) 11)
 #define MESSAGE_BUFFER_DATA13_INDEX ((UCHAR) 12)
 #define MESSAGE_BUFFER_DATA14_INDEX ((UCHAR) 13)
-
 
 
 
