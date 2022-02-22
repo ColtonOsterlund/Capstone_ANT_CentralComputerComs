@@ -15,16 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CentralComputerComs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ANT-SDK_PC.3.5\DEMO_DLL\libant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ANTMessage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -42,9 +36,6 @@
     <ClCompile Include="ANTThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SendReceiveQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,6 +43,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WebSocketMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralComputerComs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

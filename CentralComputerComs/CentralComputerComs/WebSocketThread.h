@@ -16,8 +16,6 @@ public:
 	// Allow the class to be callable as a thread
 	void operator()() override;
 
-	void request_termination() override;
-
 private:
 	WebSocketServer socket_server;
 	WebSocketQueueHandler queue_handler;
