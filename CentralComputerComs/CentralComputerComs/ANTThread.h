@@ -10,7 +10,7 @@ public:
 	ANTThread(SendReceiveQueue<ANTMessage>* queues);
 
 	// Allow the class to be callable as a thread
-	void operator()();
+	void operator()() override;
 
 private:
 	 

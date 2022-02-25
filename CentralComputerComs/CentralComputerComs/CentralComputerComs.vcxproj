@@ -143,7 +143,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\ANT-SDK_PC.3.5\DEMO_DLL\libant.cpp" />
     <ClCompile Include="ANTThread.cpp" />
-    <ClCompile Include="CentralComputerComs.cpp" />
     <ClCompile Include="CentralComputerThread.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainThread.cpp" />

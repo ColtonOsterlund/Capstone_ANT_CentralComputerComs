@@ -32,6 +32,7 @@ void WebSocketServer::on_close(connection_hdl hdl)
 void WebSocketServer::on_message(connection_hdl hdl, server::message_ptr msg)
 {
     if (queue_handler != NULL) {
+        std::cout << msg->get_payload() << std::endl;
         queue_handler->push_message(msg->get_payload());
     }
     else {
@@ -41,6 +42,7 @@ void WebSocketServer::on_message(connection_hdl hdl, server::message_ptr msg)
 
 void WebSocketServer::run()
 {
+    std::cout << "Starting WebSocket server on port: " << DEFAULT_WEBSOCKET_PORT << std::endl;
     m_server.listen(DEFAULT_WEBSOCKET_PORT);
     m_server.start_accept();
     m_server.run();

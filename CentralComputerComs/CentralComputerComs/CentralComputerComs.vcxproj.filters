@@ -45,9 +45,6 @@
     <ClCompile Include="WebSocketMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CentralComputerComs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ANTMessage.h">

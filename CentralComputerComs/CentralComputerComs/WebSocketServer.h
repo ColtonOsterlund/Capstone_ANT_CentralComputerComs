@@ -11,7 +11,7 @@ using websocketpp::connection_hdl;
 typedef websocketpp::server<websocketpp::config::asio> server;
 typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
 
-#define DEFAULT_WEBSOCKET_PORT 9002
+#define DEFAULT_WEBSOCKET_PORT 8080
 
 /* Forward declare to avoid association issue */
 class WebSocketQueueHandler;
