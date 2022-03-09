@@ -22,7 +22,7 @@ public:
 	/*
 	* Add a message to the send queue
 	*/
-	void send_message(T message)
+	void send_message(T& message)
 	{
 		send_queue->push(message);
 	}
@@ -37,7 +37,7 @@ public:
 		if (receive_queue_is_empty()) {
 			std::cout << "Popping message from empty queue!" << std::endl;
 		}
-		return send_queue->pop();
+		return receive_queue->pop();
 	}
 
 	/*

@@ -4,6 +4,7 @@
 
 #include "ANTThread.h"
 #include "WebSocketThread.h"
+#include "ProcessingThread.h"
 
 MainThread::MainThread():
 	CentralComputerThread(),
@@ -17,6 +18,7 @@ MainThread::MainThread():
 
 	class_threads[0] = new ANTThread(&ant_thread_queues);
 	class_threads[1] = new WebSocketThread(&websocket_thread_queues);
+	class_threads[2] = new ProcessingThread(&websocket_processing_queues, &ant_processing_queues);
 
 }
 

@@ -10,7 +10,7 @@
 #include "WebSocketMessage.h"
 #include "SendReceiveQueue.h"
 
-#define NUM_THREADS 2
+#define NUM_THREADS 3
 
 enum {
 	TERMINATE
