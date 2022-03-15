@@ -31,3 +31,11 @@ void ANTThreadMessageHandler::set_conveyor_system(ConveyorSystem* system)
 {
 	this->conveyor_system = system;
 }
+
+void ANTThreadMessageHandler::send_conveyor_disconnect_msg(int conveyor_id)
+{
+}
+
+void ANTThreadMessageHandler::send_conveyor_connect_msg(int conveyor_id, int connection_id, ConveyorConnectionType conn_type)
+{
+}

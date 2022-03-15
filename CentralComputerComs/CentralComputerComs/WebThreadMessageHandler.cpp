@@ -1,6 +1,12 @@
 #include "WebThreadMessageHandler.h"
 
 #include <iostream>
+#include <json.hpp>
+
+#include "websocket_messages.h"
+
+using json = nlohmann::json;
+
 
 WebThreadMessageHandler::WebThreadMessageHandler(SendReceiveQueue<WebSocketMessage>* queues): ProcessingThreadMessageHandler<WebSocketMessage>(queues) {}
 
@@ -21,8 +27,17 @@ bool WebThreadMessageHandler::handle_message()
 
 	if (vars_set && !queues->receive_queue_is_empty()) {
 		WebSocketMessage msg = queues->receive_message();
-		// TODO: Handle message here
 		std::cout << "Message processed by WebThreadMessageHandler: " << msg.to_string() << std::endl;
+		
+		switch (msg.get_id()) {
+			case CONVEYOR_STATE_MSG:
+				conveyor_system->set_state(msg.get_data());
+				break;
+
+			default:
+				std::cout << "unknown message" << std::endl;
+		}
+
 		message_handled = true;
 	}
 

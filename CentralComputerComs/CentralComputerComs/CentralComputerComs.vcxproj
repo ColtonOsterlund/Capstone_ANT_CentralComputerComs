@@ -145,8 +145,9 @@
     <ClCompile Include="ANTThread.cpp" />
     <ClCompile Include="ANTThreadMessageHandler.cpp" />
     <ClCompile Include="CentralComputerThread.cpp" />
-    <ClCompile Include="ConveyorConfiguration.cpp" />
+    <ClCompile Include="Conveyor.cpp" />
     <ClCompile Include="ConveyorSystem.cpp" />
+    <ClCompile Include="DestinationBox.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainThread.cpp" />
     <ClCompile Include="ANTMessage.cpp" />
@@ -161,9 +162,12 @@
   <ItemGroup>
     <ClInclude Include="ANTThread.h" />
     <ClInclude Include="ANTThreadMessageHandler.h" />
+    <ClInclude Include="ant_messages.h" />
     <ClInclude Include="CentralComputerThread.h" />
-    <ClInclude Include="ConveyorConfiguration.h" />
+    <ClInclude Include="central_computer_types.h" />
+    <ClInclude Include="Conveyor.h" />
     <ClInclude Include="ConveyorSystem.h" />
+    <ClInclude Include="DestinationBox.h" />
     <ClInclude Include="MainThread.h" />
     <ClInclude Include="ANTMessage.h" />
     <ClInclude Include="MessageQueue.h" />
@@ -175,6 +179,7 @@
     <ClInclude Include="WebSocketQueueHandler.h" />
     <ClInclude Include="WebSocketThread.h" />
     <ClInclude Include="WebSocketServer.h" />
+    <ClInclude Include="websocket_messages.h" />
     <ClInclude Include="WebThreadMessageHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
