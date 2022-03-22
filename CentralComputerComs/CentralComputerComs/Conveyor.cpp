@@ -8,7 +8,7 @@ Conveyor::Conveyor(int id): id(id), connections(CONVEYOR_MAX_CONNECTIONS), box()
 	}
 }
 
-Conveyor::Conveyor(const Conveyor& other): id(other.id), connections(other.connections) {}
+Conveyor::Conveyor(const Conveyor& other): id(other.id), connections(other.connections), box(other.box) {}
 
 void Conveyor::add_connection(int connection, ConveyorConnectionType connection_type, int location)
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <set>
 
 #include "central_computer_types.h"
 
@@ -11,9 +12,15 @@ class DestinationBox
 public:
 	DestinationBox();
 
+	DestinationBox(const DestinationBox& other);
+
 	PackageType get_package_type() { return package_type; };
 
 	int get_id() { return id; }
+
+	std::set<int> get_stored_packages() { return packages_stored; }
+
+	std::set<int> get_packages_in_transit() { return packages_in_transit; }
 
 	/* Initializes an empty box and readies it to accept packages. */
 	void initialize_box(int box_id);
@@ -25,10 +32,10 @@ public:
 	bool can_accept_package(PackageType package);
 
 	/* Returns true if the package was added and false if the package could not be sent to this box */
-	bool add_package(PackageType package);
+	bool add_package(int package_id, PackageType package);
 
 	/* Call this when the physical box sends a message that the package was received */
-	void package_received();
+	void package_received(int package_id);
 
 	/* 
 	* Returns true if the box was emptied successfully and false if the box could not be emptied.
@@ -41,8 +48,8 @@ public:
 private:
 	int id;
 	PackageType package_type;
-	int num_packages_stored;
-	int num_packages_in_transit;
+	std::set<int> packages_stored;
+	std::set<int> packages_in_transit;
 
 };
 

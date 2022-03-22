@@ -2,7 +2,9 @@
 
 #include <iostream>
 
-DestinationBox::DestinationBox(): package_type(PackageType::INVALID), num_packages_in_transit(0), num_packages_stored(0), id(-1) {}
+DestinationBox::DestinationBox(): package_type(PackageType::INVALID), packages_in_transit(), packages_stored(), id(-1) {}
+
+DestinationBox::DestinationBox(const DestinationBox& other) : id(other.id), package_type(other.package_type), packages_stored(other.packages_stored), packages_in_transit(other.packages_in_transit) {}
 
 void DestinationBox::initialize_box(int box_id) {
     if (package_type == PackageType::INVALID) {
@@ -29,14 +31,14 @@ bool DestinationBox::can_accept_package(PackageType package)
     if (package_type == PackageType::NONE) {
         can_accept = true;
     }
-    else if (package_type == package && (num_packages_in_transit + num_packages_stored < DESTINATION_BOX_SIZE)) {
+    else if (package_type == package && (packages_in_transit.size() + packages_stored.size() < DESTINATION_BOX_SIZE)) {
         can_accept = true;
     }
     
     return can_accept;
 }
 
-bool DestinationBox::add_package(PackageType package)
+bool DestinationBox::add_package(int package_id, PackageType package)
 {
     bool package_added = false;
 
@@ -48,31 +50,38 @@ bool DestinationBox::add_package(PackageType package)
     if (package_type != PackageType::NONE && package != package_type) {
         std::cout << "Destination Box: Trying to add package of the wrong type" << std::endl;
     }
-    else if (num_packages_in_transit + num_packages_stored >= DESTINATION_BOX_SIZE) {
+    else if (packages_in_transit.size() + packages_stored.size() >= DESTINATION_BOX_SIZE) {
         std::cout << "Destination Box: Trying to add package to a full box" << std::endl;
     }
     else {
+        if (packages_in_transit.find(package_id) != packages_in_transit.end()) {
+            std::cout << "DestinationBox: Adding a duplicate package" << std::endl;
+        }
+
         package_type = package;
-        num_packages_in_transit++;
+        packages_in_transit.insert(package_id);
         package_added = true;
     }
 
     return package_added;
 }
 
-void DestinationBox::package_received()
+void DestinationBox::package_received(int package_id)
 {
     if (package_type == PackageType::INVALID) {
         std::cout << "DestinationBox: Trying to perform operation on uninitialized box" << std::endl;
         return;
     }
 
-    if (num_packages_in_transit == 0) {
+    if (packages_in_transit.size() == 0) {
         std::cout << "DestinationBox: Package was received but there are none in transit... Could be duplicate message" << std::endl;
     }
+    else if (packages_in_transit.find(package_id) == packages_in_transit.end()) {
+        std::cout << "DestinationBox: Package was received but it was not in transit for this box... Could be duplicate message" << std::endl;
+    }
     else {
-        num_packages_in_transit--;
-        num_packages_stored++;
+        packages_in_transit.erase(packages_in_transit.find(package_id));
+        packages_stored.insert(package_id);
     }
 }
 
@@ -83,14 +92,14 @@ bool DestinationBox::empty_box()
         return false;
     }
 
-    if (num_packages_in_transit != 0) {
+    if (!packages_in_transit.empty()) {
         std::cout << "Cannot clear box with contents in transit" << std::endl;
         return false;
     }
 
     package_type = PackageType::NONE;
-    num_packages_in_transit = 0;
-    num_packages_stored = 0;
+    packages_in_transit.clear();
+    packages_stored.clear();
     return true;
 }
 
@@ -98,5 +107,17 @@ std::string DestinationBox::to_string()
 {
     std::string s = "box_id: ";
     s.append(std::to_string(id));
+    s.append("Packages in transit: ");
+    for (auto& pkg_id : packages_in_transit) {
+        s.append(std::to_string(pkg_id));
+        s.append(", ");
+    }
+
+    s.append("Packages stored: ");
+    for (auto& pkg_id : packages_stored) {
+        s.append(std::to_string(pkg_id));
+        s.append(", ");
+    }
+
     return s;
 }

@@ -33,7 +33,11 @@ public:
 
 	void add_destination_box(json ids);
 
+	void get_destination_box_state(int box_id);
+
 	void send_package(json pkg);
+
+	void package_received(int package_id, int box_id);
 
 
 private:

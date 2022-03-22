@@ -44,6 +44,6 @@ void ANTThreadMessageHandler::send_destination_box_connect_msg(int conveyor_id, 
 {
 }
 
-void ANTThreadMessageHandler::send_package_to_input(PackageType pkg)
+void ANTThreadMessageHandler::send_package_to_input(int package_id, PackageType pkg)
 {
 }

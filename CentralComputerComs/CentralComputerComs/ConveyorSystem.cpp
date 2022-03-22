@@ -69,21 +69,39 @@ void ConveyorSystem::add_destination_box(json ids)
 
 }
 
+void ConveyorSystem::get_destination_box_state(int box_id)
+{
+	for (auto& pair : conveyors) {
+		Conveyor& conveyor = pair.second;
+		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
+			DestinationBox box = conveyor.get_box();
+			websocket_handler->send_destination_box_state(box.get_id(), static_cast<int>(box.get_package_type()), box.get_packages_in_transit(), box.get_stored_packages());
+			break;
+		}
+	}
+}
+
 void ConveyorSystem::send_package(json pkg)
 {
 	int raw_type = pkg["type"];
 	PackageType pkg_type = static_cast<PackageType>(raw_type);
 	
+	int pkg_id = pkg["package_id"];
+
 	bool package_sent = false;
+	int box_id = -1;
+
 
 	for (auto& pair : conveyors) {
 		Conveyor& conveyor = pair.second;
 		if (conveyor.has_destination_box() && conveyor.get_box().can_accept_package(pkg_type)) {
-			if (conveyor.get_box().add_package(pkg_type)) {
-				ant_handler->send_package_to_input(pkg_type);
+			if (conveyor.get_box().add_package(pkg_id, pkg_type)) {
+				ant_handler->send_package_to_input(pkg_id, pkg_type);
+
+				box_id = conveyor.get_box().get_id();
 				package_sent = true;
 
-				std::cout << "Added package to destination box: " << conveyor.to_string() << std::endl;
+				std::cout << "Added package:" << std::to_string(pkg_id) << " to destination box : " << conveyor.to_string() << std::endl;
 
 				break;
 			}
@@ -91,10 +109,22 @@ void ConveyorSystem::send_package(json pkg)
 	}
 
 	if (package_sent) {
-		websocket_handler->send_package_add_success();
+		websocket_handler->send_package_add_success(pkg_id, box_id);
 	}
 	else {
-		websocket_handler->send_package_add_failure("No destination boxes available.");
+		websocket_handler->send_package_add_failure(pkg_id, "No destination boxes available.");
+	}
+}
+
+void ConveyorSystem::package_received(int package_id, int box_id)
+{
+	for (auto& pair : conveyors) {
+		Conveyor& conveyor = pair.second;
+		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
+			conveyor.get_box().package_received(package_id);
+			websocket_handler->send_package_received_confirmation(package_id, box_id);
+			break;
+		}
 	}
 }
 
