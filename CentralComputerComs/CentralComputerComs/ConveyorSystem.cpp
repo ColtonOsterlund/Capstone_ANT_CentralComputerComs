@@ -30,8 +30,14 @@ void ConveyorSystem::set_state(json configuration)
 				conn_type = ConveyorConnectionType::SLAVE;
 			}
 
-			conveyor.add_connection(conn_id, conn_type, location);
+			if (conn_id != -1) {
+				conveyor.add_connection(conn_id, conn_type, location);
+			}
+
 			location++;
+			if (location > 3) {
+				location = 0;
+			}
 		}
 
 		conveyors[conveyor_id] = conveyor;
@@ -65,7 +71,7 @@ void ConveyorSystem::add_destination_box(json ids)
 
 void ConveyorSystem::send_package(json pkg)
 {
-	int raw_type = pkg['type'];
+	int raw_type = pkg["type"];
 	PackageType pkg_type = static_cast<PackageType>(raw_type);
 	
 	bool package_sent = false;
@@ -74,8 +80,11 @@ void ConveyorSystem::send_package(json pkg)
 		Conveyor& conveyor = pair.second;
 		if (conveyor.has_destination_box() && conveyor.get_box().can_accept_package(pkg_type)) {
 			if (conveyor.get_box().add_package(pkg_type)) {
-				ant_handler->send_package_to_input();
+				ant_handler->send_package_to_input(pkg_type);
 				package_sent = true;
+
+				std::cout << "Added package to destination box: " << conveyor.to_string() << std::endl;
+
 				break;
 			}
 		}

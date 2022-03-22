@@ -40,6 +40,7 @@ bool WebThreadMessageHandler::handle_message()
 
 			case ADD_PACKAGE:
 				conveyor_system->send_package(msg.get_data());
+				break;
 
 			default:
 				std::cout << "ProcessingThread: Unknown Websocket message with id: " << std::to_string(msg.get_id()) << std::endl;
@@ -63,7 +64,7 @@ void WebThreadMessageHandler::send_package_add_success()
 
 void WebThreadMessageHandler::send_package_add_failure(std::string error)
 {
-	send_package_add_response(true, error);
+	send_package_add_response(false, error);
 }
 
 void WebThreadMessageHandler::send_package_add_response(bool success, std::string details) {
@@ -76,5 +77,5 @@ void WebThreadMessageHandler::send_package_add_response(bool success, std::strin
 	}
 
 	WebSocketMessage msg = WebSocketMessage(msg_json);
-	queues->send_message(msg);
+	enqueue_message(msg);
 }

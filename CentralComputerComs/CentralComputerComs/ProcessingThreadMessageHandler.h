@@ -27,6 +27,5 @@ public:
 
 protected:
 	SendReceiveQueue<T>* queues = NULL;
-
 };
 

@@ -36,7 +36,7 @@ std::string Conveyor::to_string()
 		if (conn.second == ConveyorConnectionType::MASTER) {
 			s.append("MASTER");
 		}
-		else if (conn.second == ConveyorConnectionType::MASTER) {
+		else if (conn.second == ConveyorConnectionType::SLAVE) {
 			s.append("SLAVE");
 		}
 		else {

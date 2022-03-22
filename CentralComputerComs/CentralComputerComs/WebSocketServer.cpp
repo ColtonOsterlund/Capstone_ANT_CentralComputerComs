@@ -32,7 +32,7 @@ void WebSocketServer::on_close(connection_hdl hdl)
 void WebSocketServer::on_message(connection_hdl hdl, server::message_ptr msg)
 {
     if (queue_handler != NULL) {
-        std::cout << msg->get_payload() << std::endl;
+        //std::cout << msg->get_payload() << std::endl;
         queue_handler->push_message(msg->get_payload());
     }
     else {
