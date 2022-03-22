@@ -21,6 +21,8 @@ public:
 
 	void send_conveyor_connect_msg(int conveyor_id, int connection_id, ConveyorConnectionType conn_type);
 
+	void send_destination_box_connect_msg(int conveyor_id, int destination_box);
+
 private:
 	ConveyorSystem* conveyor_system = NULL;
 

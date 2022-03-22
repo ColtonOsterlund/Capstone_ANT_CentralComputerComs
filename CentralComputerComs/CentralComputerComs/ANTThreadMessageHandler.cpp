@@ -39,3 +39,7 @@ void ANTThreadMessageHandler::send_conveyor_disconnect_msg(int conveyor_id)
 void ANTThreadMessageHandler::send_conveyor_connect_msg(int conveyor_id, int connection_id, ConveyorConnectionType conn_type)
 {
 }
+
+void ANTThreadMessageHandler::send_destination_box_connect_msg(int conveyor_id, int destination_box)
+{
+}

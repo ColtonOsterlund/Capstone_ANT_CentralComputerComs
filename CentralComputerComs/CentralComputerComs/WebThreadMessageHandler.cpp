@@ -33,9 +33,13 @@ bool WebThreadMessageHandler::handle_message()
 			case CONVEYOR_STATE_MSG:
 				conveyor_system->set_state(msg.get_data());
 				break;
+			
+			case ADD_DESTINATION_BOX:
+				conveyor_system->add_destination_box(msg.get_data());
+				break;
 
 			default:
-				std::cout << "unknown message" << std::endl;
+				std::cout << "ProcessingThread: Unknown Websocket message with id: " << std::to_string(msg.get_id()) << std::endl;
 		}
 
 		message_handled = true;

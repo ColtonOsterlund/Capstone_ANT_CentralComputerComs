@@ -30,6 +30,7 @@ public:
 
 	void set_state(json configuration);
 
+	void add_destination_box(json ids);
 
 
 private:
@@ -40,7 +41,6 @@ private:
 	RoutingPlan routing_plan;
 
 	std::map<int, Conveyor> conveyors;
-	std::vector<DestinationBox> boxes;
 
 };
 
