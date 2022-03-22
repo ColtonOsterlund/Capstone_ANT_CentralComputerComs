@@ -46,6 +46,8 @@ void ConveyorSystem::set_state(json configuration)
 
 void ConveyorSystem::add_destination_box(json ids)
 {
+	//TODO create routing plan to box and send to ant side
+
 	int conveyor_id = ids["conveyor_id"];
 	int box_id = ids["box_id"];
 	if (conveyors.find(conveyor_id) != conveyors.end()) {
@@ -59,6 +61,32 @@ void ConveyorSystem::add_destination_box(json ids)
 		std::cout << "ConveyorSystem::add_destination_box: Conveyor does not exist" << std::endl;
 	}
 
+}
+
+void ConveyorSystem::send_package(json pkg)
+{
+	int raw_type = pkg['type'];
+	PackageType pkg_type = static_cast<PackageType>(raw_type);
+	
+	bool package_sent = false;
+
+	for (auto& pair : conveyors) {
+		Conveyor& conveyor = pair.second;
+		if (conveyor.has_destination_box() && conveyor.get_box().can_accept_package(pkg_type)) {
+			if (conveyor.get_box().add_package(pkg_type)) {
+				ant_handler->send_package_to_input();
+				package_sent = true;
+				break;
+			}
+		}
+	}
+
+	if (package_sent) {
+		websocket_handler->send_package_add_success();
+	}
+	else {
+		websocket_handler->send_package_add_failure("No destination boxes available.");
+	}
 }
 
 void ConveyorSystem::clear_configuration() {

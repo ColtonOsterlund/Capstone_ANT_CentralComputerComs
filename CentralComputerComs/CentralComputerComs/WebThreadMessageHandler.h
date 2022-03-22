@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "ProcessingThreadMessageHandler.h"
 #include "ConveyorSystem.h"
 #include "SendReceiveQueue.h"
@@ -16,7 +18,14 @@ public:
 
 	void set_conveyor_system(ConveyorSystem* system);
 
+	void send_package_add_success();
+
+	void send_package_add_failure(std::string error);
+
+
 private:
+	void send_package_add_response(bool success, std::string details);
+
 	ConveyorSystem* conveyor_system = NULL;
 
 };

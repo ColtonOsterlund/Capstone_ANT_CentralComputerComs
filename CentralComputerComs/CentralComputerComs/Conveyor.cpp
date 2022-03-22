@@ -20,6 +20,10 @@ void Conveyor::add_destination_box(int box_id) {
 	box.initialize_box(box_id);
 }
 
+bool Conveyor::has_destination_box() {
+	return box.is_initialized();
+}
+
 std::string Conveyor::to_string()
 {
 	std::string s;

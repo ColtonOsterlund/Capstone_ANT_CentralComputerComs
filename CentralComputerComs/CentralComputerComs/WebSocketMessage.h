@@ -7,10 +7,11 @@ class WebSocketMessage
 public:
 	// Length is the length of the data array
 	WebSocketMessage(std::string message);
+	WebSocketMessage(json message);
 	~WebSocketMessage();
 	WebSocketMessage(const WebSocketMessage& m1);
 	unsigned char get_id();
-	json get_data();
+	json& get_data();
 	std::string to_string();
 
 private:

@@ -19,6 +19,7 @@ class ANTThreadMessageHandler;
 
 using json = nlohmann::json;
 
+
 class ConveyorSystem
 {
 public:
@@ -31,6 +32,8 @@ public:
 	void set_state(json configuration);
 
 	void add_destination_box(json ids);
+
+	void send_package(json pkg);
 
 
 private:

@@ -45,14 +45,14 @@ bool DestinationBox::add_package(PackageType package)
         return false;
     }
 
-    if (package_type == PackageType::NONE) {
-        package_type = package;
-    }
-
-    if (package != package_type) {
+    if (package_type != PackageType::NONE && package != package_type) {
         std::cout << "Destination Box: Trying to add package of the wrong type" << std::endl;
     }
+    else if (num_packages_in_transit + num_packages_stored >= DESTINATION_BOX_SIZE) {
+        std::cout << "Destination Box: Trying to add package to a full box" << std::endl;
+    }
     else {
+        package_type = package;
         num_packages_in_transit++;
         package_added = true;
     }

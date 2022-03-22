@@ -23,6 +23,8 @@ public:
 
 	void send_destination_box_connect_msg(int conveyor_id, int destination_box);
 
+	void send_package_to_input(PackageType pkg);
+
 private:
 	ConveyorSystem* conveyor_system = NULL;
 

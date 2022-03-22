@@ -7,6 +7,13 @@ WebSocketMessage::WebSocketMessage(std::string message): data(json::parse(messag
 	data.erase("id");
 }
 
+WebSocketMessage::WebSocketMessage(json message): data(message)
+{
+	/* Set id and remove it from the json */
+	id = data["id"];
+	data.erase("id");
+}
+
 WebSocketMessage::~WebSocketMessage() {}
 
 WebSocketMessage::WebSocketMessage(const WebSocketMessage& m1): id(m1.id), data(m1.data) {}
@@ -16,7 +23,7 @@ unsigned char WebSocketMessage::get_id()
 	return id;
 }
 
-json WebSocketMessage::get_data()
+json& WebSocketMessage::get_data()
 {
 	return data;
 }
