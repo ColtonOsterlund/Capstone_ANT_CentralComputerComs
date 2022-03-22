@@ -70,7 +70,7 @@ void WebThreadMessageHandler::send_package_add_failure(std::string error)
 void WebThreadMessageHandler::send_package_add_response(bool success, std::string details) {
 	json msg_json;
 	msg_json["id"] = ADD_PACKAGE_RESPONSE;
-	msg_json["success"] = true;
+	msg_json["success"] = success;
 
 	if (!details.empty()) {
 		msg_json["details"] = details;
