@@ -39,9 +39,18 @@ public:
 
 	void package_received(int package_id, int box_id);
 
+	void remove_package(json ids);
+
+	void clear_box(int box_id);
+
+	void clear_box_completed(int box_id, std::set<int> packages_removed);
 
 private:
 	void clear_configuration();
+
+	bool box_available(int box_id);
+
+	DestinationBox& find_box(int box_id);
 
 	ANTThreadMessageHandler* ant_handler = NULL;
 	WebThreadMessageHandler* websocket_handler = NULL;

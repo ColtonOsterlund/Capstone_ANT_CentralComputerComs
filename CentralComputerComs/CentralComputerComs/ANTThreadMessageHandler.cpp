@@ -47,3 +47,11 @@ void ANTThreadMessageHandler::send_destination_box_connect_msg(int conveyor_id, 
 void ANTThreadMessageHandler::send_package_to_input(int package_id, PackageType pkg)
 {
 }
+
+void ANTThreadMessageHandler::send_remove_package_msg(int package_id, int box_id)
+{
+}
+
+void ANTThreadMessageHandler::send_clear_box_msg(int box_id)
+{
+}

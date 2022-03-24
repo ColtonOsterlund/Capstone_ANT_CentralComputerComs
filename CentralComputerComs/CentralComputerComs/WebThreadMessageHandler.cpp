@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <json.hpp>
+#include <set>
+
 
 #include "websocket_messages.h"
 
@@ -44,6 +46,14 @@ bool WebThreadMessageHandler::handle_message()
 
 			case DESTINATION_BOX_STATUS:
 				conveyor_system->get_destination_box_state(msg.get_data()["box_id"]);
+				break;
+
+			case REMOVE_PACKAGE:
+				conveyor_system->remove_package(msg.get_data());
+				break;
+
+			case CLEAR_BOX:
+				conveyor_system->clear_box(msg.get_data()["box_id"]);
 				break;
 
 			default:
@@ -98,6 +108,26 @@ void WebThreadMessageHandler::send_destination_box_state(int box_id, int package
 	enqueue_message(msg);
 }
 
+void WebThreadMessageHandler::send_remove_package_success(int package_id, int box_id)
+{
+	send_remove_package_response(package_id, true, box_id, "");
+}
+
+void WebThreadMessageHandler::send_remove_package_failure(int package_id, int box_id, std::string error)
+{
+	send_remove_package_response(package_id, false, box_id, error);
+}
+
+void WebThreadMessageHandler::send_clear_box_fail(int box_id, std::string error)
+{
+	send_clear_box_response(box_id, false, std::set<int>(), error);
+}
+
+void WebThreadMessageHandler::send_clear_box_success(int box_id, std::set<int> packages_stored)
+{
+	send_clear_box_response(box_id, true, packages_stored, "");
+}
+
 void WebThreadMessageHandler::send_package_add_response(int package_id, bool success, int box_id, std::string details) {
 	json msg_json;
 	msg_json["id"] = ADD_PACKAGE_RESPONSE;
@@ -106,10 +136,45 @@ void WebThreadMessageHandler::send_package_add_response(int package_id, bool suc
 
 	if (box_id != -1) {
 		msg_json["box_id"] = box_id;
-
 	}
 
 	if (!details.empty()) {
+		msg_json["details"] = details;
+	}
+
+	WebSocketMessage msg = WebSocketMessage(msg_json);
+	enqueue_message(msg);
+}
+
+void WebThreadMessageHandler::send_remove_package_response(int package_id, bool success, int box_id, std::string details)
+{
+	json msg_json;
+	msg_json["id"] = REMOVE_PACKAGE_RESPONSE;
+	msg_json["package_id"] = package_id;
+	msg_json["success"] = success;
+	msg_json["box_id"] = box_id;
+	
+
+	if (!details.empty()) {
+		msg_json["details"] = details;
+	}
+
+	WebSocketMessage msg = WebSocketMessage(msg_json);
+	enqueue_message(msg);
+}
+
+void WebThreadMessageHandler::send_clear_box_response(int box_id, bool success, std::set<int> packages_stored, std::string details)
+{
+	json msg_json;
+	json packages_removed_j = json(packages_stored);
+	msg_json["id"] = CLEAR_BOX_RESPONSE;
+	msg_json["success"] = success;
+	msg_json["box_id"] = box_id;
+
+
+	if (success){
+		msg_json["packages_removed"] = packages_removed_j;
+	} else {
 		msg_json["details"] = details;
 	}
 

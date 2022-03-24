@@ -43,6 +43,15 @@ public:
 	*/
 	bool empty_box();
 
+	/* Returns true if the package is stored at the destination box else false */
+	bool has_package_stored(int package_id);
+
+	/* Returns true if the package is in transit towards the box */
+	bool has_package_in_transit(int package_id);
+
+	/* Returns true if the package was successfully removed */
+	bool remove_package(int package_id);
+
 	std::string to_string();
 
 private:

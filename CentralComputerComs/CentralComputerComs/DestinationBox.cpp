@@ -103,6 +103,32 @@ bool DestinationBox::empty_box()
     return true;
 }
 
+bool DestinationBox::has_package_stored(int package_id)
+{
+    if (packages_stored.find(package_id) != packages_stored.end()) {
+        return true;
+    }
+
+    return false;
+}
+
+bool DestinationBox::has_package_in_transit(int package_id)
+{
+    if (packages_in_transit.find(package_id) != packages_in_transit.end()) {
+        return true;
+    }
+    return false;
+}
+
+bool DestinationBox::remove_package(int package_id)
+{
+    if (has_package_stored(package_id)) {
+        packages_stored.erase(packages_stored.find(package_id));
+        return true;
+    }
+    return false;
+}
+
 std::string DestinationBox::to_string()
 {
     std::string s = "box_id: ";

@@ -25,6 +25,10 @@ public:
 
 	void send_package_to_input(int package_id, PackageType pkg);
 
+	void send_remove_package_msg(int package_id, int box_id);
+
+	void send_clear_box_msg(int box_id);
+
 private:
 	ConveyorSystem* conveyor_system = NULL;
 

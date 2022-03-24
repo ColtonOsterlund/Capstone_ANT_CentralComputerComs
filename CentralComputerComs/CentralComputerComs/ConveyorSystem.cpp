@@ -71,13 +71,12 @@ void ConveyorSystem::add_destination_box(json ids)
 
 void ConveyorSystem::get_destination_box_state(int box_id)
 {
-	for (auto& pair : conveyors) {
-		Conveyor& conveyor = pair.second;
-		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
-			DestinationBox box = conveyor.get_box();
-			websocket_handler->send_destination_box_state(box.get_id(), static_cast<int>(box.get_package_type()), box.get_packages_in_transit(), box.get_stored_packages());
-			break;
-		}
+	if (box_available(box_id)) {
+		DestinationBox box = find_box(box_id);
+		websocket_handler->send_destination_box_state(box.get_id(), static_cast<int>(box.get_package_type()), box.get_packages_in_transit(), box.get_stored_packages());
+	}
+	else {
+		std::cout << "ConveyorSystem: Trying to get state of box that does not exist" << std::endl;
 	}
 }
 
@@ -118,14 +117,58 @@ void ConveyorSystem::send_package(json pkg)
 
 void ConveyorSystem::package_received(int package_id, int box_id)
 {
-	for (auto& pair : conveyors) {
-		Conveyor& conveyor = pair.second;
-		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
-			conveyor.get_box().package_received(package_id);
-			websocket_handler->send_package_received_confirmation(package_id, box_id);
-			break;
+	if (box_available(box_id)) {
+		find_box(box_id).package_received(package_id);
+		websocket_handler->send_package_received_confirmation(package_id, box_id);
+	}
+	else {
+		std::cout << "ConveyorSystem: Package received by box that does not exist in processing thread" << std::endl;
+	}
+}
+
+void ConveyorSystem::remove_package(json ids)
+{
+	int box_id = ids["box_id"];
+	int package_id = ids["package_id"];
+
+	if (box_available(box_id)) {
+		DestinationBox box = find_box(box_id);
+
+		if (box.has_package_stored(package_id)) {
+			if (find_box(box_id).remove_package(package_id)) {
+				ant_handler->send_remove_package_msg(package_id, box_id);
+				websocket_handler->send_remove_package_success(package_id, box_id);
+			}
+			else {
+				// idk how it would ever get here without getting to the other errors
+				websocket_handler->send_remove_package_failure(package_id, box_id, "Could not remove package.");
+			}
+
+		} else if (box.has_package_in_transit(package_id)) {
+			websocket_handler->send_remove_package_failure(package_id, box_id, "Could not remove package. Package is in transit towards box.");
+		} else {
+			websocket_handler->send_remove_package_failure(package_id, box_id, "Box does not have package in storage or in transit.");
+
 		}
 	}
+	else {
+		websocket_handler->send_remove_package_failure(package_id, box_id, "This box does not exist");
+	}
+}
+
+void ConveyorSystem::clear_box(int box_id)
+{
+	if (box_available(box_id)) {
+		ant_handler->send_clear_box_msg(box_id);
+	}
+	else {
+		websocket_handler->send_clear_box_fail(box_id, "Box not found");
+	}
+}
+
+void ConveyorSystem::clear_box_completed(int box_id, std::set<int> packages_removed)
+{
+	websocket_handler->send_clear_box_success(box_id, packages_removed);
 }
 
 void ConveyorSystem::clear_configuration() {
@@ -134,4 +177,41 @@ void ConveyorSystem::clear_configuration() {
 	}
 
 	conveyors.clear();
+}
+
+bool ConveyorSystem::box_available(int box_id)
+{
+	// Invalid box number
+	if (box_id == -1) {
+		return false;
+	}
+
+	bool box_is_avail = false;
+	for (auto& pair : conveyors) {
+		Conveyor& conveyor = pair.second;
+		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
+			box_is_avail = true;
+			break;
+		}
+	}
+	return box_is_avail;
+}
+
+DestinationBox& ConveyorSystem::find_box(int box_id)
+{
+	DestinationBox box;
+	bool box_is_avail = false;
+	for (auto& pair : conveyors) {
+		Conveyor& conveyor = pair.second;
+		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
+			box = conveyor.get_box();
+			break;
+		}
+	}
+
+	if (box.get_id() == -1) {
+		std::cout << "ConveyorSystem: Could not find box with matching id... Returning invalid box" << std::endl;
+	}
+
+	return box;
 }
