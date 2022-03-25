@@ -142,6 +142,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ANT-SDK_PC.3.5\DEMO_DLL\libant.cpp" />
+    <ClCompile Include="ANTQueueHandler.cpp" />
+    <ClCompile Include="ANTServer.cpp" />
     <ClCompile Include="ANTThread.cpp" />
     <ClCompile Include="ANTThreadMessageHandler.cpp" />
     <ClCompile Include="CentralComputerThread.cpp" />
@@ -160,6 +162,8 @@
     <ClCompile Include="WebThreadMessageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ANTQueueHandler.h" />
+    <ClInclude Include="ANTServer.h" />
     <ClInclude Include="ANTThread.h" />
     <ClInclude Include="ANTThreadMessageHandler.h" />
     <ClInclude Include="ant_messages.h" />

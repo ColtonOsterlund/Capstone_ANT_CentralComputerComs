@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 /*
 * Message class to wrap byte array messages between threads
 */
@@ -8,12 +10,14 @@ class ANTMessage
 public:
 	// Length is the length of the data array
 	ANTMessage(int id, int conveyor_id, unsigned char* data, int length);
+	ANTMessage(int id, unsigned char* data, int length);
 	ANTMessage(int id, int conveyor_id);
 	~ANTMessage();
 	ANTMessage(const ANTMessage& m1);
 	int get_id() { return id; }
 	unsigned char* get_data() { return data; }
 
+	std::string to_string();
 
 private:
 	int id;

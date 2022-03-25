@@ -34,7 +34,7 @@ public:
 
 	void send_clear_box_fail(int box_id, std::string error);
 
-	void send_clear_box_success(int box_id, std::set<int> packages_stored);
+	void send_clear_box_success(int box_id, std::set<int>& packages_stored);
 
 
 private:
@@ -42,7 +42,7 @@ private:
 
 	void send_remove_package_response(int package_id, bool success, int box_id, std::string details);
 
-	void send_clear_box_response(int box_id, bool success, std::set<int> packages_stored, std::string details);
+	void send_clear_box_response(int box_id, bool success, std::set<int>& packages_stored, std::string details);
 
 	ConveyorSystem* conveyor_system = NULL;
 

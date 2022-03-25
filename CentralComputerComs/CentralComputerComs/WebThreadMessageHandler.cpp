@@ -120,10 +120,11 @@ void WebThreadMessageHandler::send_remove_package_failure(int package_id, int bo
 
 void WebThreadMessageHandler::send_clear_box_fail(int box_id, std::string error)
 {
-	send_clear_box_response(box_id, false, std::set<int>(), error);
+	std::set<int> empty_set;
+	send_clear_box_response(box_id, false, empty_set, error);
 }
 
-void WebThreadMessageHandler::send_clear_box_success(int box_id, std::set<int> packages_stored)
+void WebThreadMessageHandler::send_clear_box_success(int box_id, std::set<int>& packages_stored)
 {
 	send_clear_box_response(box_id, true, packages_stored, "");
 }
@@ -163,7 +164,7 @@ void WebThreadMessageHandler::send_remove_package_response(int package_id, bool 
 	enqueue_message(msg);
 }
 
-void WebThreadMessageHandler::send_clear_box_response(int box_id, bool success, std::set<int> packages_stored, std::string details)
+void WebThreadMessageHandler::send_clear_box_response(int box_id, bool success, std::set<int>& packages_stored, std::string details)
 {
 	json msg_json;
 	json packages_removed_j = json(packages_stored);

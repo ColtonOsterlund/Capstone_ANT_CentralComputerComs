@@ -72,7 +72,7 @@ void ConveyorSystem::add_destination_box(json ids)
 void ConveyorSystem::get_destination_box_state(int box_id)
 {
 	if (box_available(box_id)) {
-		DestinationBox box = find_box(box_id);
+		DestinationBox& box = find_box(box_id);
 		websocket_handler->send_destination_box_state(box.get_id(), static_cast<int>(box.get_package_type()), box.get_packages_in_transit(), box.get_stored_packages());
 	}
 	else {
@@ -132,7 +132,7 @@ void ConveyorSystem::remove_package(json ids)
 	int package_id = ids["package_id"];
 
 	if (box_available(box_id)) {
-		DestinationBox box = find_box(box_id);
+		DestinationBox& box = find_box(box_id);
 
 		if (box.has_package_stored(package_id)) {
 			if (find_box(box_id).remove_package(package_id)) {
@@ -168,7 +168,7 @@ void ConveyorSystem::clear_box(int box_id)
 	}
 }
 
-void ConveyorSystem::clear_box_completed(int box_id, std::set<int> packages_removed)
+void ConveyorSystem::clear_box_completed(int box_id, std::set<int>& packages_removed)
 {
 	websocket_handler->send_clear_box_success(box_id, packages_removed);
 }
@@ -201,20 +201,18 @@ bool ConveyorSystem::box_available(int box_id)
 
 DestinationBox& ConveyorSystem::find_box(int box_id)
 {
-	DestinationBox box;
 	for (auto& pair : conveyors) {
 		Conveyor& conveyor = pair.second;
 		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
-			box = conveyor.get_box();
-			break;
+			DestinationBox& box = conveyor.get_box();
+			return box;
 		}
 	}
 
-	if (box.get_id() == -1) {
-		std::cout << "ConveyorSystem: Could not find box with matching id... Returning invalid box" << std::endl;
-	}
+	std::cout << "ConveyorSystem: Could not find box with matching id... Returning invalid box" << std::endl;
 
-	return box;
+	// Return something
+	return conveyors.at(1).get_box();
 }
 
 Conveyor& ConveyorSystem::get_conveyor_from_box(int box_id) {

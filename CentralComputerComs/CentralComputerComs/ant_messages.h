@@ -12,6 +12,7 @@ enum {
 	CLEAR_BOX_RESPONSE_ID = 8,
 	REMOVE_PACKAGE_ID = 9,
 	ADD_PACKAGE_ID = 10,
+	ROUTING_PLAN_ID = 11,
 };
 
 
@@ -20,34 +21,53 @@ enum {
 #define BOX_STATE_LENGTH 0 // msg not used
 
 #define CONVEYOR_CONNECT_LENGTH 3
-enum ConveyorConnectPayloadIndex {
+enum class ConveyorConnectPayloadIndex {
 	TARGET_ID = 0,
 	CONNECTION_TYPE = 1,
 	LOCATION = 2,
 };
 
 #define BOX_CONNECT_LENGTH 1
-enum BoxConnectPayloadIndex {
+enum class BoxConnectPayloadIndex {
 	BOX_ID = 0,
 };
 
 #define DISCONNECT_LENGTH 0 // No payload
 
 #define CLEAR_BOX_LENGTH 1
-enum ClearBoxPayloadIndex {
+enum class ClearBoxPayloadIndex {
 	BOX_ID = 0,
 };
 
+#define CLEAR_BOX_RESPONSE_STATIC_LENGTH 2
+enum class ClearBoxResponsePayloadIndex {
+	BOX_ID = 0,
+	NUM_PACKAGES,
+};
+
 #define REMOVE_PACKAGE_LENGTH 2
-enum RemovePackagePayloadIndex {
+enum class RemovePackagePayloadIndex {
 	BOX_ID = 0,
 	PACKAGE_ID = 1,
 };
 
 #define ADD_PACKAGE_LENGTH 3
-enum AddPackagePayloadIndex {
+enum class AddPackagePayloadIndex {
 	BOX_ID = 0,
 	PACKAGE_ID = 1,
 	PACKAGE_TYPE = 2,
 };
 
+#define ROUTING_PLAN_LENGTH 2
+enum class RoutingPlanPayloadIndex {
+	BOX_ID = 0,
+	TARGET_CONVEYOR_ID = 1,
+};
+
+/* Used to convert from enum class types into their underlying int type */
+template <typename T>
+constexpr auto operator+(T e) noexcept
+-> std::enable_if_t<std::is_enum<T>::value, std::underlying_type_t<T>>
+{
+	return static_cast<std::underlying_type_t<T>>(e);
+}

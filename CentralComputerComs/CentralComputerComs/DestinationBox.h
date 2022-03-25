@@ -18,9 +18,9 @@ public:
 
 	int get_id() { return id; }
 
-	std::set<int> get_stored_packages() { return packages_stored; }
+	std::set<int>& get_stored_packages() { return packages_stored; }
 
-	std::set<int> get_packages_in_transit() { return packages_in_transit; }
+	std::set<int>& get_packages_in_transit() { return packages_in_transit; }
 
 	/* Initializes an empty box and readies it to accept packages. */
 	void initialize_box(int box_id);

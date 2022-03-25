@@ -28,8 +28,12 @@ public:
 	void send_remove_package_msg(int conveyor_id, int package_id, int box_id);
 
 	void send_clear_box_msg(int conveyor_id, int box_id);
+	
+	void send_routing_plan_msg(int conveyor_id, int box_id, int target_conveyor);
 
 private:
+	void handle_clear_box_response_msg(ANTMessage& msg);
+
 	ConveyorSystem* conveyor_system = NULL;
 
 };

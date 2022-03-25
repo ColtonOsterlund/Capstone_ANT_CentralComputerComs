@@ -43,7 +43,7 @@ public:
 
 	void clear_box(int box_id);
 
-	void clear_box_completed(int box_id, std::set<int> packages_removed);
+	void clear_box_completed(int box_id, std::set<int>& packages_removed);
 
 private:
 	void clear_configuration();

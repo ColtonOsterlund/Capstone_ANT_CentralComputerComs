@@ -70,7 +70,7 @@ void WebSocketServer::request_termination()
 {
     CentralComputerThread::request_termination();
     m_server.stop_listening();
-    for (auto it : m_connections) {
+    for (auto& it : m_connections) {
         m_server.close(it, websocketpp::close::status::normal, "Server close");
     }
 }
