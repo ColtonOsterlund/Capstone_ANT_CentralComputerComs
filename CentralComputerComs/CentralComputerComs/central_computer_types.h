@@ -2,6 +2,8 @@
 
 #define EMPTY_CONVEYOR_ID -1
 
+#define INPUT_CONVEYOR_ID 1
+
 enum class ConveyorConnectionType {
 	MASTER = 0,
 	SLAVE = 1,

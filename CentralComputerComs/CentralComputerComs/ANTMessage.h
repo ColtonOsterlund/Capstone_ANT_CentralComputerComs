@@ -7,15 +7,18 @@ class ANTMessage
 {
 public:
 	// Length is the length of the data array
-	ANTMessage(int id, unsigned char* data, int length);
+	ANTMessage(int id, int conveyor_id, unsigned char* data, int length);
+	ANTMessage(int id, int conveyor_id);
 	~ANTMessage();
 	ANTMessage(const ANTMessage& m1);
-	unsigned char get_id();
-	unsigned char* get_data();
+	int get_id() { return id; }
+	unsigned char* get_data() { return data; }
+
 
 private:
-	unsigned char id;
+	int id;
 	int length;
+	int conveyor_id;
 	unsigned char* data;
 };
 

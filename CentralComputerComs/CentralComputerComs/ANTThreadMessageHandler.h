@@ -19,15 +19,15 @@ public:
 
 	void send_conveyor_disconnect_msg(int conveyor_id);
 
-	void send_conveyor_connect_msg(int conveyor_id, int connection_id, ConveyorConnectionType conn_type);
+	void send_conveyor_connect_msg(int conveyor_id, int connection_id, ConveyorConnectionType conn_type, ConveyorLocationType location);
 
 	void send_destination_box_connect_msg(int conveyor_id, int destination_box);
 
-	void send_package_to_input(int package_id, PackageType pkg);
+	void send_package_to_input(int box_id, int package_id, PackageType pkg);
 
-	void send_remove_package_msg(int package_id, int box_id);
+	void send_remove_package_msg(int conveyor_id, int package_id, int box_id);
 
-	void send_clear_box_msg(int box_id);
+	void send_clear_box_msg(int conveyor_id, int box_id);
 
 private:
 	ConveyorSystem* conveyor_system = NULL;

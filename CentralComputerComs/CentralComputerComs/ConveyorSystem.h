@@ -52,6 +52,8 @@ private:
 
 	DestinationBox& find_box(int box_id);
 
+	Conveyor& get_conveyor_from_box(int box_id);
+
 	ANTThreadMessageHandler* ant_handler = NULL;
 	WebThreadMessageHandler* websocket_handler = NULL;
 	RoutingPlan routing_plan;

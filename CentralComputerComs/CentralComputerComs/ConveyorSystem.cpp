@@ -95,9 +95,9 @@ void ConveyorSystem::send_package(json pkg)
 		Conveyor& conveyor = pair.second;
 		if (conveyor.has_destination_box() && conveyor.get_box().can_accept_package(pkg_type)) {
 			if (conveyor.get_box().add_package(pkg_id, pkg_type)) {
-				ant_handler->send_package_to_input(pkg_id, pkg_type);
-
 				box_id = conveyor.get_box().get_id();
+
+				ant_handler->send_package_to_input(box_id, pkg_id, pkg_type);
 				package_sent = true;
 
 				std::cout << "Added package:" << std::to_string(pkg_id) << " to destination box : " << conveyor.to_string() << std::endl;
@@ -136,7 +136,8 @@ void ConveyorSystem::remove_package(json ids)
 
 		if (box.has_package_stored(package_id)) {
 			if (find_box(box_id).remove_package(package_id)) {
-				ant_handler->send_remove_package_msg(package_id, box_id);
+				int conveyor_id = get_conveyor_from_box(box_id).get_id();
+				ant_handler->send_remove_package_msg(conveyor_id, package_id, box_id);
 				websocket_handler->send_remove_package_success(package_id, box_id);
 			}
 			else {
@@ -159,7 +160,8 @@ void ConveyorSystem::remove_package(json ids)
 void ConveyorSystem::clear_box(int box_id)
 {
 	if (box_available(box_id)) {
-		ant_handler->send_clear_box_msg(box_id);
+		int conveyor_id = get_conveyor_from_box(box_id).get_id();
+		ant_handler->send_clear_box_msg(conveyor_id, box_id);
 	}
 	else {
 		websocket_handler->send_clear_box_fail(box_id, "Box not found");
@@ -200,7 +202,6 @@ bool ConveyorSystem::box_available(int box_id)
 DestinationBox& ConveyorSystem::find_box(int box_id)
 {
 	DestinationBox box;
-	bool box_is_avail = false;
 	for (auto& pair : conveyors) {
 		Conveyor& conveyor = pair.second;
 		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
@@ -214,4 +215,18 @@ DestinationBox& ConveyorSystem::find_box(int box_id)
 	}
 
 	return box;
+}
+
+Conveyor& ConveyorSystem::get_conveyor_from_box(int box_id) {
+
+	for (auto& pair : conveyors) {
+		Conveyor& conveyor = pair.second;
+		if (conveyor.has_destination_box() && conveyor.get_box().get_id() == box_id) {
+			return conveyor;
+		}
+	}
+
+	std::cout << "ConveyorSystem: Could not find matching conveyor to passed box id" << std::endl;
+	// Returning something
+	return conveyors.at(INPUT_CONVEYOR_ID);
 }
