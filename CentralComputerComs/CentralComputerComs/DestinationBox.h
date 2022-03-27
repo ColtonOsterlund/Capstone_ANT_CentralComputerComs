@@ -37,9 +37,14 @@ public:
 	/* Call this when the physical box sends a message that the package was received */
 	void package_received(int package_id);
 
+	/*
+	* Clears the passed packages from the stored and in transit packages
+	*/
+	void clear_box(std::set<int>& removed_packages);
+
 	/* 
+	* Empties a box completely
 	* Returns true if the box was emptied successfully and false if the box could not be emptied.
-	* The box may have a package in transit if false was returned and the system must wait for that package to arrive before emptying this box.
 	*/
 	bool empty_box();
 

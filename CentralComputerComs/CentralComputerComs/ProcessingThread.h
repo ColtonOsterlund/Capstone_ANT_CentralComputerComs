@@ -6,7 +6,7 @@
 #include "WebThreadMessageHandler.h"
 
 #include "WebSocketMessage.h"
-#include "ANTMessage.h"
+#include "BackendANTMessage.h"
 
 
 #define PROCESSING_THREAD_SLEEP_MS 500

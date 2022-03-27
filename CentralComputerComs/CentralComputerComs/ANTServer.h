@@ -13,6 +13,8 @@ public:
 
 	void set_queue_handler(ANTQueueHandler* handler);
 
+	bool is_terminated() { return terminate_requested; }
+
 private:
 	ANTQueueHandler* queue_handler;
 };

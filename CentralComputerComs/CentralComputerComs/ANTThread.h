@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ANTMessage.h"
+#include "BackendANTMessage.h"
 #include "SendReceiveQueue.h"
 #include "CentralComputerThread.h"
 #include "ANTServer.h"

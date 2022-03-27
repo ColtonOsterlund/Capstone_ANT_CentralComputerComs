@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ProcessingThreadMessageHandler.h"
-#include "ANTMessage.h"
+#include "BackendANTMessage.h"
 #include "SendReceiveQueue.h"
 #include "ConveyorSystem.h"
 

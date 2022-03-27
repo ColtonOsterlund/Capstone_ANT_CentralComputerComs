@@ -15,13 +15,13 @@ All rights reserved.
 #include "demo.h"
 
 #include "types.h"
-#include "antdefines.h"
 #include "antmessage.h"
+
+#include "antdefines.h"
 
 #include "libant.h"
 
-#include <stdio.h>
-#include <assert.h>
+#include "BackendANTDriver.h"
 
 #define ENABLE_EXTENDED_MESSAGES // Un - comment to enable extended messages.
 
@@ -68,8 +68,8 @@ static UCHAR aucTransmitBuffer[ANT_STANDARD_DATA_PAYLOAD_SIZE];
 static UCHAR ucDeviceNumber;
 static bool bBroadcasting;
 static bool bDisplay;
-static bool bDone;
 
+static ANTServer* backend_server = nullptr;
 
 // Declare callback functions into the library.
 static BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_);
@@ -81,26 +81,21 @@ void Program_Init(UCHAR ucDeviceNumber_);
 void Program_Start();
 
 
-
-int not_main(int argc, char** argv)
-{
-
-    ucDeviceNumber = 0xFF; //This indicates which of the plugged in USB ANT devices you'd like to use - starting at 0
-
-
-    if (argc > 2)
-    {
-        ucDeviceNumber = (UCHAR)atoi(argv[1]);
-
-    }
-
-    Program_Init(ucDeviceNumber);
-    Program_Start();
-    return 0;
+void Set_backend_ANT_server(ANTServer* server) {
+    backend_server = server;
 }
 
-
-
+void Run_driver(unsigned char device_number)
+{
+    if (backend_server == nullptr) {
+        printf("ANT backend server not set");
+        return;
+    }
+    //ucDeviceNumber = 0xFF; //This indicates which of the plugged in USB ANT devices you'd like to use - starting at 0
+    ucDeviceNumber = device_number;
+    Program_Init(ucDeviceNumber);
+    Program_Start();
+}
 
 
 
@@ -119,7 +114,6 @@ void Program_Init(UCHAR ucDeviceNumber_)
     BOOL bStatus;
     bBroadcasting = true; //turn on broadcasting
     bDisplay = true; //turn on console message display
-    bDone = false; //test will run until this flag is switched
 
     // Load the ANT DLL functions.
     if (!ANT_Load())
@@ -132,18 +126,6 @@ void Program_Init(UCHAR ucDeviceNumber_)
     if (ANT_LibVersionSupport())
     {
         printf("ANT Library Version %s\n", ANT_LibVersion());
-    }
-
-
-    // If no device number was specified on the command line,
-    // prompt the user for input.
-    if (ucDeviceNumber_ == 0xFF)
-    {
-        printf("Device number?\n"); fflush(stdout);
-        scanf("%u", &ucDeviceNumber_);
-        char st[1024];
-        fgets(st, sizeof(st), stdin);
-        sscanf(st, "%u", &ucDeviceNumber_);
     }
 
 
@@ -178,7 +160,6 @@ void Program_Init(UCHAR ucDeviceNumber_)
 ////////////////////////////////////////////////////////////////////////////////
 void Program_Start()
 {
-
     // Reset system
     printf("Resetting module...\n");
     ANT_ResetSystem();         // Soft reset
@@ -189,37 +170,9 @@ void Program_Start()
     UCHAR ucNetKey[8] = USER_NETWORK_KEY;
     ANT_SetNetworkKey(USER_NETWORK_NUM, ucNetKey);
 
-    while (!bDone)
+    while (!backend_server->is_terminated())
     {
-
-        UCHAR ucChar;
-        char st[1024];
-        fgets(st, sizeof(st), stdin);
-        sscanf(st, "%c", &ucChar);
-
-        switch (ucChar)
-        {
-        case 'Q':
-        case 'q':
-        {
-            // Quit
-            printf("Closing channel...\n");
-            ANT_CloseChannel(USER_ANTCHANNEL);
-            break;
-        }
-        case 'A':
-        case 'a':
-        {
-            // Send Acknowledged data
-            UCHAR aucTempBuffer[] = { 1,2,3,4,5,6,7,8 };
-            ANT_SendAcknowledgedData(USER_ANTCHANNEL, aucTempBuffer);
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
+        // Should we do something in here
         ANT_Nap(0);
     }
 
@@ -693,8 +646,6 @@ BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_)
                 break;
             }
             printf("Channel unassigned\n");
-            printf("Press enter to exit\n");
-            bDone = TRUE;
             break;
         }
         case MESG_CLOSE_CHANNEL_ID:

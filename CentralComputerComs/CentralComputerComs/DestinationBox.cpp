@@ -85,15 +85,25 @@ void DestinationBox::package_received(int package_id)
     }
 }
 
+void DestinationBox::clear_box(std::set<int>& removed_packages) {
+    for (auto& package_id : removed_packages) {
+        if (has_package_in_transit(package_id)) {
+            packages_in_transit.erase(packages_in_transit.find(package_id));
+        }
+        else if (has_package_stored(package_id)) {
+            packages_stored.erase(packages_stored.find(package_id));
+        }
+        else {
+            std::cout << "DestinationBox: Package removed from box not found in transit or stored" << std::endl;
+        }
+    }
+}
+
+
 bool DestinationBox::empty_box()
 {
     if (package_type == PackageType::INVALID) {
         std::cout << "DestinationBox: Trying to perform operation on uninitialized box" << std::endl;
-        return false;
-    }
-
-    if (!packages_in_transit.empty()) {
-        std::cout << "Cannot clear box with contents in transit" << std::endl;
         return false;
     }
 

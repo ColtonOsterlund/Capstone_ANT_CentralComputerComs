@@ -3,7 +3,7 @@
 #include "CentralComputerThread.h"
 #include "SendReceiveQueue.h"
 #include "ANTServer.h"
-#include "ANTMessage.h"
+#include "BackendANTMessage.h"
 
 #define ANT_QUEUE_HANDLER_SLEEP_TIMER 100
 

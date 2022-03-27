@@ -171,6 +171,7 @@ void ConveyorSystem::clear_box(int box_id)
 void ConveyorSystem::clear_box_completed(int box_id, std::set<int>& packages_removed)
 {
 	websocket_handler->send_clear_box_success(box_id, packages_removed);
+	find_box(box_id).clear_box(packages_removed);
 }
 
 void ConveyorSystem::clear_configuration() {
