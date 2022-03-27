@@ -18,6 +18,8 @@ public:
 
 	void send_ANT_message(ANTMessage& msg);
 
+	void continue_flow_control();
+
 private:
 	ANTQueueHandler* queue_handler;
 };

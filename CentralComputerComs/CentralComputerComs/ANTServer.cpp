@@ -30,6 +30,11 @@ void ANTServer::send_ANT_message(ANTMessage& msg)
 		msg_arr[ANT_MSG_HEADER_LENGTH + i] = msg.get_data()[i];
 	}
 
-	Send_message_to_ANT(msg_arr);
+	Send_message_to_ANT(msg_arr, msg.get_length() + ANT_MSG_HEADER_LENGTH);
 	delete[] msg_arr;
+}
+
+void ANTServer::continue_flow_control()
+{
+	queue_handler->set_flow_continue();
 }

@@ -9,4 +9,4 @@ void Set_backend_ANT_server(ANTServer* server);
 
 void Run_driver(unsigned char device_number);
 
-void Send_message_to_ANT(unsigned char* msg);
+void Send_message_to_ANT(unsigned char* msg, int length);

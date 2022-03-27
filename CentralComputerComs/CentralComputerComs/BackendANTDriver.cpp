@@ -69,6 +69,7 @@ static UCHAR ucDeviceNumber;
 static bool bBroadcasting;
 static bool bDisplay;
 
+static UCHAR current_msg_buffer[ANT_STANDARD_DATA_PAYLOAD_SIZE];
 static ANTServer* backend_server = nullptr;
 
 // Declare callback functions into the library.
@@ -79,14 +80,22 @@ static BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_);
 //Declare functions for our application
 void Program_Init(UCHAR ucDeviceNumber_);
 void Program_Start();
+void Retry_ACK_send();
 
 
 void Set_backend_ANT_server(ANTServer* server) {
     backend_server = server;
 }
 
-void Send_message_to_ANT(unsigned char* msg) {
-    ANT_SendAcknowledgedData(USER_ANTCHANNEL, msg);
+void Send_message_to_ANT(unsigned char* msg, int length) {
+    for (int i = 0; i < length; i++) {
+        current_msg_buffer[i] = msg[i];
+    }
+    ANT_SendAcknowledgedData(USER_ANTCHANNEL, current_msg_buffer);
+}
+
+void Retry_ACK_send() {
+    ANT_SendAcknowledgedData(USER_ANTCHANNEL, current_msg_buffer);
 }
 
 void Run_driver(unsigned char device_number)
@@ -226,16 +235,18 @@ BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_)
             // Echo what the data will be over the air on the next message period.
             if (bDisplay)
             {
-                printf("Tx:(%d): [%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x]\n",
-                    USER_ANTCHANNEL,
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA1_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA2_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA3_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA4_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA5_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA6_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA7_INDEX],
-                    aucTransmitBuffer[MESSAGE_BUFFER_DATA8_INDEX]);
+                if (aucTransmitBuffer[MESSAGE_BUFFER_DATA1_INDEX] != 0) {
+                    printf("Tx:(%d): [%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x]\n",
+                        USER_ANTCHANNEL,
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA1_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA2_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA3_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA4_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA5_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA6_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA7_INDEX],
+                        aucTransmitBuffer[MESSAGE_BUFFER_DATA8_INDEX]);
+                }
             }
             else
             {
@@ -350,11 +361,13 @@ BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_)
     case EVENT_TRANSFER_TX_COMPLETED:
     {
         printf("Tranfer Completed.\n");
+        backend_server->continue_flow_control();
         break;
     }
     case EVENT_TRANSFER_TX_FAILED:
     {
-        printf("Tranfer Failed.\n");
+        printf("Tranfer Failed. Retrying...\n");
+        Retry_ACK_send();
         break;
     }
     case EVENT_CHANNEL_CLOSED:
@@ -678,6 +691,9 @@ BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_)
                 break;
             }
         }
+        case TRANSFER_IN_PROGRESS:
+            printf("ACK message in progress");
+
 
         default:
         {
