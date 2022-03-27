@@ -12,7 +12,7 @@ void ANTQueueHandler::operator()()
 
 				ANTMessage msg = queues->receive_message();
 				std::cout << msg.to_string() << std::endl;
-				//TODO send msg to server
+				ant_server->send_ANT_message(msg);
 			}
 			else {
 				std::cout << "ANT Queue Handler: Attempting to send message to client when server is not set." << std::endl;
