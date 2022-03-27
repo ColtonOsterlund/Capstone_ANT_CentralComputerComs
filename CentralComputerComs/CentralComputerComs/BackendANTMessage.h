@@ -16,6 +16,8 @@ public:
 	ANTMessage(const ANTMessage& m1);
 	int get_id() { return id; }
 	unsigned char* get_data() { return data; }
+	int get_length() { return length; }
+	int get_conveyor_id() { return conveyor_id; };
 
 	std::string to_string();
 

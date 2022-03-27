@@ -85,6 +85,10 @@ void Set_backend_ANT_server(ANTServer* server) {
     backend_server = server;
 }
 
+void Send_message_to_ANT(unsigned char* msg) {
+    ANT_SendAcknowledgedData(USER_ANTCHANNEL, msg);
+}
+
 void Run_driver(unsigned char device_number)
 {
     if (backend_server == nullptr) {

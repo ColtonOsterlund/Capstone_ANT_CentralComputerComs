@@ -22,7 +22,7 @@ ANTMessage::ANTMessage(int id, int conveyor_id): id(id), conveyor_id(conveyor_id
 
 ANTMessage::~ANTMessage() {
 	if (data != nullptr) {
-		delete this->data;
+		delete[] this->data;
 	}
 }
 ANTMessage::ANTMessage(const ANTMessage& m1)
@@ -48,6 +48,8 @@ std::string ANTMessage::to_string()
 	std::string s;
 	s.append("ANT Message --- ID: ");
 	s.append(std::to_string(id));
+	s.append(", Conveyor: ");
+	s.append(std::to_string(conveyor_id));
 	s.append(", Data: ");
 	for (int i = 0; i < length; i++) {
 		s.append(std::to_string(data[i]));
