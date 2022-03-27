@@ -20,7 +20,17 @@ public:
 
 	void continue_flow_control();
 
+	void receive_ANT_message(unsigned char* payload);
+
 private:
+	void received_input_conveyor_state(int conveyor_id, bool is_available);
+
+	void send_conveyor_state_request(int conveyor_id);
+
+	void send_message_to_driver(ANTMessage& msg);
+
 	ANTQueueHandler* queue_handler;
+	ANTMessage* pending_msg;
+	bool checking_input_conveyor_ready;
 };
 

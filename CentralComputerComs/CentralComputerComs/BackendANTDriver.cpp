@@ -447,6 +447,14 @@ BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_)
 
     switch (ucMessageId_)
     {
+
+    case MESG_ACKNOWLEDGED_DATA_ID:
+    {
+        // Send back the array starting from the second index. The first index is the message id
+        backend_server->receive_ANT_message(&aucResponseBuffer[MESSAGE_BUFFER_DATA2_INDEX]);
+        break;
+    }
+
     case MESG_STARTUP_MESG_ID:
     {
         printf("RESET Complete, reason: ");
