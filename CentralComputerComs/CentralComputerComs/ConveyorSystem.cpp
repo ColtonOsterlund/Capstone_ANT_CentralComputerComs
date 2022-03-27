@@ -32,6 +32,7 @@ void ConveyorSystem::set_state(json configuration)
 
 			if (conn_id != -1) {
 				conveyor.add_connection(conn_id, conn_type, location);
+				ant_handler->send_conveyor_connect_msg(conveyor_id, conn_id, conn_type, ConveyorLocationType(location));
 			}
 
 			location++;
