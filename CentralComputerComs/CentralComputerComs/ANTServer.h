@@ -2,8 +2,10 @@
 
 #include "ANTQueueHandler.h"
 #include "BackendANTMessage.h"
+#include "ANTServerTimer.h"
 
 class ANTQueueHandler;
+class ANTServerTimer;
 
 class ANTServer: public CentralComputerThread
 {
@@ -22,6 +24,8 @@ public:
 
 	void receive_ANT_message(unsigned char* payload);
 
+	void pending_message_timed_out();
+
 private:
 	void received_input_conveyor_state(int conveyor_id, bool is_available);
 
@@ -31,12 +35,16 @@ private:
 
 	void wait_for_message(int msg_id, int conveyor_id);
 
+
 	ANTQueueHandler* queue_handler;
 	ANTMessage* pending_input_conveyor_msg;
 	bool checking_input_conveyor_ready;
 
+	ANTMessage* pending_msg;
 	bool waiting_for_receive;
 	int waiting_conveyor_id;
 	int waiting_msg_id;
+
+	ANTServerTimer* timer;
 };
 
