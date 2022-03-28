@@ -52,6 +52,7 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 		int msg_id = payload[(+MessageReceivedIndex::MSG_ID) + ANT_RESPONSE_HEADER_LENGTH];
 		int conveyor_id = payload[(+MessageReceivedIndex::CONVEYOR_ID) + ANT_RESPONSE_HEADER_LENGTH];
 		if (waiting_for_receive && waiting_msg_id == msg_id && waiting_conveyor_id == conveyor_id) {
+			std::cout << "ANTServer: Received message that we were waiting for" << std::endl;
 			waiting_for_receive = false;
 			waiting_msg_id = -1;
 			waiting_conveyor_id = EMPTY_CONVEYOR_ID;
