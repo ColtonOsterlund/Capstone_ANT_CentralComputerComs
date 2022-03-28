@@ -297,8 +297,10 @@ BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_)
 
         if (bDisplay)
         {
-            if (ucEvent_ == EVENT_RX_ACKNOWLEDGED || ucEvent_ == EVENT_RX_FLAG_ACKNOWLEDGED)
+            if (ucEvent_ == EVENT_RX_ACKNOWLEDGED || ucEvent_ == EVENT_RX_FLAG_ACKNOWLEDGED) {
                 printf("Acked Rx:(%d): ", aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX]);
+                backend_server->receive_ANT_message(&aucResponseBuffer[MESSAGE_BUFFER_DATA2_INDEX]);
+            }
             else if (ucEvent_ == EVENT_RX_BURST_PACKET || ucEvent_ == EVENT_RX_FLAG_BURST_PACKET)
                 printf("Burst(0x%02x) Rx:(%d): ", ((aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX] & 0xE0) >> 5), aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX] & 0x1F);
             else
@@ -446,23 +448,6 @@ BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_)
 
     switch (ucMessageId_)
     {
-
-    case MESG_ACKNOWLEDGED_DATA_ID:
-    {
-        printf("ACK Rx:(%d): [%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x]\n",
-            USER_ANTCHANNEL,
-            aucResponseBuffer[MESSAGE_BUFFER_DATA1_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA2_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA3_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA4_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA5_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA6_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA7_INDEX],
-            aucResponseBuffer[MESSAGE_BUFFER_DATA8_INDEX]);
-        // Send back the array starting from the second index. The first index is the message id
-        backend_server->receive_ANT_message(&aucResponseBuffer[MESSAGE_BUFFER_DATA2_INDEX]);
-        break;
-    }
 
     case MESG_STARTUP_MESG_ID:
     {
