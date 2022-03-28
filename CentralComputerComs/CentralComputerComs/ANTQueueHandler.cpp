@@ -12,8 +12,8 @@ void ANTQueueHandler::operator()()
 
 				ANTMessage msg = queues->receive_message();
 				std::cout << msg.to_string() << std::endl;
-				//set_flow_stop();
-				//ant_server->send_ANT_message(msg);
+				set_flow_stop();
+				ant_server->send_ANT_message(msg);
 			}
 			else if (flow_control == FlowControl::STOP) {
 				sleep(ANT_QUEUE_HANDLER_FLOW_CONTROL_SLEEP_TIMER);

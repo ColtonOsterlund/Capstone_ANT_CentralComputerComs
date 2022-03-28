@@ -15,7 +15,7 @@ ANTServer::ANTServer(): queue_handler(nullptr), pending_input_conveyor_msg(nullp
 
 void ANTServer::operator()()
 {
-	//Run_driver(ANT_BACKEND_SERVER_DEVICE_NUMBER);
+	Run_driver(ANT_BACKEND_SERVER_DEVICE_NUMBER);
 }
 
 void ANTServer::set_queue_handler(ANTQueueHandler* handler)
