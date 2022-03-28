@@ -7,7 +7,7 @@ ANTQueueHandler::ANTQueueHandler(SendReceiveQueue<ANTMessage>* queues): CentralC
 void ANTQueueHandler::operator()()
 {
 	while (!terminate_requested) {
-		while (!queues->receive_queue_is_empty()) {
+		while (!terminate_requested && !queues->receive_queue_is_empty()) {
 			if (flow_control == FlowControl::CONTINUE && ant_server != nullptr) {
 
 				ANTMessage msg = queues->receive_message();
