@@ -449,7 +449,7 @@ BOOL ANT_DLL_Serial_Callback(UCHAR ucChannel_, UCHAR ucMessageId_)
 
     case MESG_ACKNOWLEDGED_DATA_ID:
     {
-        printf("Rx:(%d): [%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x]\n",
+        printf("ACK Rx:(%d): [%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x],[%02x]\n",
             USER_ANTCHANNEL,
             aucResponseBuffer[MESSAGE_BUFFER_DATA1_INDEX],
             aucResponseBuffer[MESSAGE_BUFFER_DATA2_INDEX],
