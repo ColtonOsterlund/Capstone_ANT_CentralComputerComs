@@ -82,7 +82,7 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 
 	default:
 	{
-		std::cout << "ANTServer: Received unknown ANT ACK message" << std::endl;
+		std::cout << "ANTServer: Received unknown ANT ACK message with id: " << std::to_string(msg_id) << std::endl;
 		break;
 	}
 	}
