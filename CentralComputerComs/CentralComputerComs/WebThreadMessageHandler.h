@@ -36,6 +36,8 @@ public:
 
 	void send_clear_box_success(int box_id, std::set<int>& packages_stored);
 
+	void send_add_box_response(int box_id, int conveyor_id, bool success, std::string details);
+
 
 private:
 	void send_package_add_response(int package_id, bool success, int box_id, std::string details);

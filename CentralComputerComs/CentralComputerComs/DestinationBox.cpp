@@ -2,14 +2,15 @@
 
 #include <iostream>
 
-DestinationBox::DestinationBox(): package_type(PackageType::INVALID), packages_in_transit(), packages_stored(), id(-1) {}
+DestinationBox::DestinationBox(): package_type(PackageType::INVALID), location(ConveyorLocationType::INVALID), packages_in_transit(), packages_stored(), id(-1) {}
 
-DestinationBox::DestinationBox(const DestinationBox& other) : id(other.id), package_type(other.package_type), packages_stored(other.packages_stored), packages_in_transit(other.packages_in_transit) {}
+DestinationBox::DestinationBox(const DestinationBox& other) : id(other.id), package_type(other.package_type), location(ConveyorLocationType::INVALID), packages_stored(other.packages_stored), packages_in_transit(other.packages_in_transit) {}
 
-void DestinationBox::initialize_box(int box_id) {
+void DestinationBox::initialize_box(int box_id, int location) {
     if (package_type == PackageType::INVALID) {
         package_type = PackageType::NONE;
         id = box_id;
+        this->location = ConveyorLocationType(location);
     }
     else {
         std::cout << "DestinationBox: Trying to initialize a box more than once" << std::endl;

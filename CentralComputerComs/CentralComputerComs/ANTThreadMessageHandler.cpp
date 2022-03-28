@@ -76,11 +76,12 @@ void ANTThreadMessageHandler::send_conveyor_connect_msg(int conveyor_id, int con
 	enqueue_message(msg);
 }
 
-void ANTThreadMessageHandler::send_destination_box_connect_msg(int conveyor_id, int destination_box)
+void ANTThreadMessageHandler::send_destination_box_connect_msg(int conveyor_id, int destination_box, int location)
 {
 	unsigned char payload[BOX_CONNECT_LENGTH] = { 0 };
 
 	payload[+BoxConnectPayloadIndex::BOX_ID] = destination_box;
+	payload[+BoxConnectPayloadIndex::LOCATION] = location;
 
 	ANTMessage msg = ANTMessage(
 		BOX_CONNECT_ID,

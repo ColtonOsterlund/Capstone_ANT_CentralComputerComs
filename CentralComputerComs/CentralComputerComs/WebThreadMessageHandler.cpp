@@ -129,6 +129,22 @@ void WebThreadMessageHandler::send_clear_box_success(int box_id, std::set<int>& 
 	send_clear_box_response(box_id, true, packages_stored, "");
 }
 
+void WebThreadMessageHandler::send_add_box_response(int box_id, int conveyor_id, bool success, std::string details)
+{
+	json msg_json;
+	msg_json["id"] = ADD_DESTINATION_BOX_RESPONSE;
+	msg_json["box_id"] = box_id;
+	msg_json["conveyor_id"] = conveyor_id;
+	msg_json["success"] = success;
+
+	if (!success) {
+		msg_json["details"] = details;
+	}
+
+	WebSocketMessage msg = WebSocketMessage(msg_json);
+	enqueue_message(msg);
+}
+
 void WebThreadMessageHandler::send_package_add_response(int package_id, bool success, int box_id, std::string details) {
 	json msg_json;
 	msg_json["id"] = ADD_PACKAGE_RESPONSE;

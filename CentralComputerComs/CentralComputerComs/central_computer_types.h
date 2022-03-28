@@ -2,7 +2,12 @@
 
 #define EMPTY_CONVEYOR_ID -1
 
+// Used to define where boxes are located
+#define BOX_CONVEYOR_ID -2
+
+
 #define INPUT_CONVEYOR_ID 1
+
 
 enum class ConveyorConnectionType {
 	MASTER = 0,

@@ -24,9 +24,11 @@ public:
 
 	void add_connection(int connection, ConveyorConnectionType connection_type, int location);
 
-	void add_destination_box(int box_id);
+	void add_destination_box(int box_id, int location);
 
 	bool has_destination_box();
+
+	bool has_connection_at_location(int location);
 
 	std::string to_string();
 

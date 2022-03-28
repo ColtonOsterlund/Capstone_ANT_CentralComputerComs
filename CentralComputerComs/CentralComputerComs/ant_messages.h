@@ -43,9 +43,10 @@ enum class ConveyorConnectPayloadIndex {
 	LOCATION = 2,
 };
 
-#define BOX_CONNECT_LENGTH 1
+#define BOX_CONNECT_LENGTH 2
 enum class BoxConnectPayloadIndex {
 	BOX_ID = 0,
+	LOCATION = 1,
 };
 
 #define DISCONNECT_LENGTH 0 // No payload

@@ -22,8 +22,10 @@ public:
 
 	std::set<int>& get_packages_in_transit() { return packages_in_transit; }
 
+	ConveyorLocationType get_location() { return location; }
+
 	/* Initializes an empty box and readies it to accept packages. */
-	void initialize_box(int box_id);
+	void initialize_box(int box_id, int location);
 
 	/* Returns true if the box is initialized */
 	bool is_initialized();
@@ -61,6 +63,7 @@ public:
 
 private:
 	int id;
+	ConveyorLocationType location;
 	PackageType package_type;
 	std::set<int> packages_stored;
 	std::set<int> packages_in_transit;

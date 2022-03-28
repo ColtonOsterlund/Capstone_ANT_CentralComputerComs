@@ -16,12 +16,22 @@ void Conveyor::add_connection(int connection, ConveyorConnectionType connection_
 	connections.at(location) = connection_pair;
 }
 
-void Conveyor::add_destination_box(int box_id) {
-	box.initialize_box(box_id);
+void Conveyor::add_destination_box(int box_id, int location) {
+	box.initialize_box(box_id, location);
+	std::pair<int, ConveyorConnectionType> box_connection_pair(BOX_CONVEYOR_ID, ConveyorConnectionType::SLAVE);
+	connections.at(location) = box_connection_pair;
 }
 
 bool Conveyor::has_destination_box() {
 	return box.is_initialized();
+}
+
+bool Conveyor::has_connection_at_location(int location) {
+	if (connections.at(location).first != EMPTY_CONVEYOR_ID) {
+		return true;
+	}
+
+	return false;
 }
 
 std::string Conveyor::to_string()

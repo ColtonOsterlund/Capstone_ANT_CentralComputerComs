@@ -21,7 +21,7 @@ public:
 
 	void send_conveyor_connect_msg(int conveyor_id, int connection_id, ConveyorConnectionType conn_type, ConveyorLocationType location);
 
-	void send_destination_box_connect_msg(int conveyor_id, int destination_box);
+	void send_destination_box_connect_msg(int conveyor_id, int destination_box, int location);
 
 	void send_package_to_input(int box_id, int package_id, PackageType pkg);
 

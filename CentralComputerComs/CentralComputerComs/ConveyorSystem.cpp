@@ -57,15 +57,35 @@ void ConveyorSystem::add_destination_box(json ids)
 
 	int conveyor_id = ids["conveyor_id"];
 	int box_id = ids["box_id"];
-	if (conveyors.find(conveyor_id) != conveyors.end()) {
-		conveyors.find(conveyor_id)->second.add_destination_box(box_id);
-		ant_handler->send_destination_box_connect_msg(conveyor_id, box_id);
+	int location = ids["box_location"];
+	std::string err;
 
-		std::cout << "\nAdding destination box..." << std::endl;
-		std::cout << conveyors.find(conveyor_id)->second.to_string() << std::endl;
+	if (conveyors.find(conveyor_id) != conveyors.end()) {
+		if (conveyors.find(conveyor_id)->second.has_destination_box()) {
+			err.append("ConveyorSystem::add_destination_box: Trying to add a box to a conveyor that already has one");
+
+		}
+		else if (conveyors.find(conveyor_id)->second.has_connection_at_location(location)) {
+			err.append("ConveyorSystem::add_destination_box: Conveyor selected already has a connection at that location");
+		}
+		else {
+			conveyors.find(conveyor_id)->second.add_destination_box(box_id, location);
+			ant_handler->send_destination_box_connect_msg(conveyor_id, box_id, location);
+
+			std::cout << "\nAdding destination box..." << std::endl;
+			std::cout << conveyors.find(conveyor_id)->second.to_string() << std::endl;
+		}
+
 	}
 	else {
-		std::cout << "ConveyorSystem::add_destination_box: Conveyor does not exist" << std::endl;
+		err.append("ConveyorSystem::add_destination_box: Conveyor does not exist");
+	}
+
+	if (!err.empty()) {
+		websocket_handler->send_add_box_response(box_id, conveyor_id, false, err);
+	}
+	else {
+		websocket_handler->send_add_box_response(box_id, conveyor_id, true, "");
 	}
 
 }
