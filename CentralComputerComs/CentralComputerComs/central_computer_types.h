@@ -24,9 +24,9 @@ enum class ConveyorLocationType {
 };
 
 enum class PackageType {
-	SMALL = 0,
-	MEDIUM = 1,
-	LARGE = 2,
+	RED = 0,
+	YELLOW = 1,
+	GREEN = 2,
 	NONE,
 	INVALID
 };
