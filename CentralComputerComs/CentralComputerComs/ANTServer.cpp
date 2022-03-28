@@ -30,7 +30,12 @@ void ANTServer::send_ANT_message(ANTMessage& msg)
 		checking_input_conveyor_ready = true;
 		send_conveyor_state_request(msg.get_conveyor_id());
 	}
+	else if (msg.get_id() == CLEAR_BOX_ID) {
+		wait_for_message(CLEAR_BOX_RESPONSE_ID, msg.get_conveyor_id());
+		send_message_to_driver(msg);
+	}
 	else {
+		wait_for_message(msg.get_id(), msg.get_conveyor_id());
 		send_message_to_driver(msg);
 	}
 }
@@ -57,10 +62,7 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 			waiting_msg_id = -1;
 			waiting_conveyor_id = EMPTY_CONVEYOR_ID;
 
-			// Continue flow control if we are not doing an internal wait for the conveyor to be ready
-			if (msg_id != CONVEYOR_STATE_RESPONSE_ID) {
-				continue_flow_control();
-			}
+			continue_flow_control();
 		}
 		break;
 	}
@@ -69,7 +71,9 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 	{
 		int conveyor_id = payload[(+ConveyorStateResponseIndex::CONVEYOR_ID) + ANT_RESPONSE_HEADER_LENGTH];
 		bool is_available = payload[(+ConveyorStateResponseIndex::AVAILABLE) + ANT_RESPONSE_HEADER_LENGTH];
-		received_input_conveyor_state(conveyor_id, is_available);
+		if (waiting_for_receive && waiting_msg_id == msg_id && waiting_conveyor_id == conveyor_id) {
+			received_input_conveyor_state(conveyor_id, is_available);
+		}
 		break;
 	}
 
@@ -77,8 +81,15 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 	{
 		int num_packages = payload[+ClearBoxResponsePayloadIndex::NUM_PACKAGES];
 		queue_handler->push_message(CLEAR_BOX_RESPONSE_ID, &payload[ANT_RESPONSE_HEADER_LENGTH], CLEAR_BOX_RESPONSE_STATIC_LENGTH + num_packages);
+		if (waiting_for_receive && waiting_msg_id == msg_id) {
+			waiting_for_receive = false;
+			waiting_msg_id = -1;
+			waiting_conveyor_id = EMPTY_CONVEYOR_ID;
+		}
+		continue_flow_control();
 		break;
 	}
+
 
 	default:
 	{
@@ -93,6 +104,7 @@ void ANTServer::received_input_conveyor_state(int conveyor_id, bool is_available
 	if (pending_input_conveyor_msg != nullptr) {
 		if (is_available) {
 			checking_input_conveyor_ready = false;
+			wait_for_message(ADD_PACKAGE_ID, conveyor_id);
 			send_message_to_driver(*pending_input_conveyor_msg);
 			delete pending_input_conveyor_msg;
 			pending_input_conveyor_msg = nullptr;
@@ -115,14 +127,11 @@ void ANTServer::send_conveyor_state_request(int conveyor_id)
 		conveyor_id
 	);
 
+	wait_for_message(CONVEYOR_STATE_RESPONSE_ID, conveyor_id);
 	send_message_to_driver(msg);
 }
 
 void ANTServer::send_message_to_driver(ANTMessage& msg) {
-	waiting_for_receive = true;
-	waiting_conveyor_id = msg.get_conveyor_id();
-	waiting_msg_id = msg.get_id();
-
 	unsigned char* msg_arr = new unsigned char[msg.get_length() + ANT_MSG_HEADER_LENGTH];
 	msg_arr[ANT_MSG_CONVEYOR_ID_INDEX] = msg.get_conveyor_id();
 	msg_arr[ANT_MSG_ID_INDEX] = msg.get_id();
@@ -133,4 +142,11 @@ void ANTServer::send_message_to_driver(ANTMessage& msg) {
 
 	Send_message_to_ANT(msg_arr, msg.get_length() + ANT_MSG_HEADER_LENGTH);
 	delete[] msg_arr;
+}
+
+void ANTServer::wait_for_message(int msg_id, int conveyor_id)
+{
+	waiting_for_receive = true;
+	waiting_conveyor_id = conveyor_id;
+	waiting_msg_id = msg_id;
 }

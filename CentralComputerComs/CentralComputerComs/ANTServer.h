@@ -29,6 +29,8 @@ private:
 
 	void send_message_to_driver(ANTMessage& msg);
 
+	void wait_for_message(int msg_id, int conveyor_id);
+
 	ANTQueueHandler* queue_handler;
 	ANTMessage* pending_input_conveyor_msg;
 	bool checking_input_conveyor_ready;
