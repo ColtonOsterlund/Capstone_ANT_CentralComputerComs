@@ -22,6 +22,7 @@ enum {
 	REMOVE_PACKAGE_ID = 9,
 	ADD_PACKAGE_ID = 10,
 	ROUTING_PLAN_ID = 11,
+	MESSAGE_RECEIVED_ID = 12,
 };
 
 
@@ -79,6 +80,12 @@ enum class AddPackagePayloadIndex {
 enum class RoutingPlanPayloadIndex {
 	BOX_ID = 0,
 	TARGET_CONVEYOR_ID = 1,
+};
+
+#define MESSAGE_RECEIVED_LENGTH 2
+enum class MessageReceivedIndex {
+	MSG_ID = 0,
+	CONVEYOR_ID = 1,
 };
 
 /* Used to convert from enum class types into their underlying int type */

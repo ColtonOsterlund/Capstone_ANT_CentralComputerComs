@@ -30,7 +30,11 @@ private:
 	void send_message_to_driver(ANTMessage& msg);
 
 	ANTQueueHandler* queue_handler;
-	ANTMessage* pending_msg;
+	ANTMessage* pending_input_conveyor_msg;
 	bool checking_input_conveyor_ready;
+
+	bool waiting_for_receive;
+	int waiting_conveyor_id;
+	int waiting_msg_id;
 };
 

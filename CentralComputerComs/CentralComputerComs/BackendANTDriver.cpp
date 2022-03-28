@@ -361,7 +361,6 @@ BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_)
     case EVENT_TRANSFER_TX_COMPLETED:
     {
         printf("Tranfer Completed.\n");
-        backend_server->continue_flow_control();
         break;
     }
     case EVENT_TRANSFER_TX_FAILED:
