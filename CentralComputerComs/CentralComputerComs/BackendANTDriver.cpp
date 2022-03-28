@@ -298,8 +298,8 @@ BOOL ANT_MessageProtocol_Callback(UCHAR ucChannel_, UCHAR ucEvent_)
         if (bDisplay)
         {
             if (ucEvent_ == EVENT_RX_ACKNOWLEDGED || ucEvent_ == EVENT_RX_FLAG_ACKNOWLEDGED) {
-                printf("Acked Rx:(%d): ", aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX]);
-                backend_server->receive_ANT_message(&aucResponseBuffer[MESSAGE_BUFFER_DATA2_INDEX]);
+                printf("Acked Rx:(%d): \n", aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX]);
+                backend_server->receive_ANT_message(&aucChannelBuffer[ucDataOffset]);
             }
             else if (ucEvent_ == EVENT_RX_BURST_PACKET || ucEvent_ == EVENT_RX_FLAG_BURST_PACKET)
                 printf("Burst(0x%02x) Rx:(%d): ", ((aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX] & 0xE0) >> 5), aucChannelBuffer[MESSAGE_BUFFER_DATA1_INDEX] & 0x1F);
