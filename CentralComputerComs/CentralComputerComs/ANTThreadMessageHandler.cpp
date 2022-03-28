@@ -32,6 +32,10 @@ bool ANTThreadMessageHandler::handle_message()
 				handle_clear_box_response_msg(msg);
 				break;
 
+			case PACKAGE_ARRIVED_ID:
+				handle_package_arrived_msg(msg);
+				break;
+
 			default:
 				std::cout << "Processing Thread ANT Message Handler: Got message with unknown id: " << std::to_string(msg.get_id()) << std::endl;
 				break;
@@ -176,4 +180,12 @@ void ANTThreadMessageHandler::handle_clear_box_response_msg(ANTMessage& msg)
 	}
 
 	conveyor_system->clear_box_completed(box_id, packages);
+}
+
+void ANTThreadMessageHandler::handle_package_arrived_msg(ANTMessage& msg)
+{
+	int box_id = msg.get_data()[+PackageArrivedIndex::BOX_ID];
+	int package_id = msg.get_data()[+PackageArrivedIndex::PACKAGE_ID];
+
+	conveyor_system->package_received(package_id, box_id);
 }

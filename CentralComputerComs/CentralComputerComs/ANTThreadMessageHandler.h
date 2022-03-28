@@ -34,6 +34,8 @@ public:
 private:
 	void handle_clear_box_response_msg(ANTMessage& msg);
 
+	void handle_package_arrived_msg(ANTMessage& msg);
+
 	ConveyorSystem* conveyor_system = NULL;
 
 };

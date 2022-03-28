@@ -79,14 +79,23 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 
 	case CLEAR_BOX_RESPONSE_ID:
 	{
-		int num_packages = payload[+ClearBoxResponsePayloadIndex::NUM_PACKAGES];
-		queue_handler->push_message(CLEAR_BOX_RESPONSE_ID, &payload[ANT_RESPONSE_HEADER_LENGTH], CLEAR_BOX_RESPONSE_STATIC_LENGTH + num_packages);
 		if (waiting_for_receive && waiting_msg_id == msg_id) {
 			waiting_for_receive = false;
 			waiting_msg_id = -1;
 			waiting_conveyor_id = EMPTY_CONVEYOR_ID;
+
+			int num_packages = payload[+ClearBoxResponsePayloadIndex::NUM_PACKAGES];
+			queue_handler->push_message(CLEAR_BOX_RESPONSE_ID, &payload[ANT_RESPONSE_HEADER_LENGTH], CLEAR_BOX_RESPONSE_STATIC_LENGTH + num_packages);
+
+			continue_flow_control();
 		}
-		continue_flow_control();
+
+		break;
+	}
+
+	case PACKAGE_ARRIVED_ID:
+	{
+		queue_handler->push_message(PACKAGE_ARRIVED_ID, &payload[ANT_RESPONSE_HEADER_LENGTH], PACKAGE_ARRIVED_LENGTH);
 		break;
 	}
 
@@ -96,7 +105,8 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 		std::cout << "ANTServer: Received unknown ANT ACK message with id: " << std::to_string(msg_id) << std::endl;
 		break;
 	}
-	}
+
+	} // END SWITCH
 }
 
 void ANTServer::received_input_conveyor_state(int conveyor_id, bool is_available)

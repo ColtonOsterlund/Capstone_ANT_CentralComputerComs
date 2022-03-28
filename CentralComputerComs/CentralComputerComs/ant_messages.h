@@ -35,6 +35,11 @@ enum class ConveyorStateResponseIndex {
 };
 
 #define PACKAGE_ARRIVED_LENGTH 2
+enum class PackageArrivedIndex {
+	BOX_ID = 0,
+	PACKAGE_ID = 1,
+};
+
 #define BOX_STATE_LENGTH 0 // msg not used
 
 #define CONVEYOR_CONNECT_LENGTH 3
