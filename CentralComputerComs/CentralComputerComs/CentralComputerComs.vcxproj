@@ -155,7 +155,6 @@
     <ClCompile Include="MainThread.cpp" />
     <ClCompile Include="BackendANTMessage.cpp" />
     <ClCompile Include="ProcessingThread.cpp" />
-    <ClCompile Include="RoutingPlan.cpp" />
     <ClCompile Include="WebSocketMessage.cpp" />
     <ClCompile Include="WebSocketQueueHandler.cpp" />
     <ClCompile Include="WebSocketThread.cpp" />
@@ -179,7 +178,6 @@
     <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="ProcessingThread.h" />
     <ClInclude Include="ProcessingThreadMessageHandler.h" />
-    <ClInclude Include="RoutingPlan.h" />
     <ClInclude Include="SendReceiveQueue.h" />
     <ClInclude Include="WebSocketMessage.h" />
     <ClInclude Include="WebSocketQueueHandler.h" />

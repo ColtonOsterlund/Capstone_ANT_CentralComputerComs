@@ -54,9 +54,6 @@
     <ClCompile Include="ConveyorSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RoutingPlan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ANTThreadMessageHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConveyorSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RoutingPlan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ANTThreadMessageHandler.h">

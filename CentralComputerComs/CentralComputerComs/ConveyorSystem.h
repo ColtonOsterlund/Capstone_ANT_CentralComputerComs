@@ -8,7 +8,6 @@ class ConveyorSystem;
 #include <json.hpp>
 
 #include "WebThreadMessageHandler.h"
-#include "RoutingPlan.h"
 #include "ANTThreadMessageHandler.h"
 #include "Conveyor.h"
 #include "DestinationBox.h"
@@ -54,9 +53,12 @@ private:
 
 	Conveyor& get_conveyor_from_box(int box_id);
 
+	void create_routing_plan(int box_id, int target_conveyor);
+
+	std::vector<int> calculate_routing_plan(int target_conveyor);
+
 	ANTThreadMessageHandler* ant_handler = NULL;
 	WebThreadMessageHandler* websocket_handler = NULL;
-	RoutingPlan routing_plan;
 
 	std::map<int, Conveyor> conveyors;
 

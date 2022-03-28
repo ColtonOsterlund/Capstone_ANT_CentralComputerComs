@@ -1,5 +1,7 @@
 #pragma once
 
+#define VALID_CONVEYOR_ID_MIN 1
+
 #define EMPTY_CONVEYOR_ID -1
 
 // Used to define where boxes are located

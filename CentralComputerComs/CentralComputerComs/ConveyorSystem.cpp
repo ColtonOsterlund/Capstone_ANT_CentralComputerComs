@@ -1,6 +1,9 @@
 #include "ConveyorSystem.h"
 
-ConveyorSystem::ConveyorSystem(): routing_plan(), conveyors() {}
+#include <set>
+#include <queue>
+
+ConveyorSystem::ConveyorSystem(): conveyors() {}
 
 void ConveyorSystem::set_websocket_message_handler(WebThreadMessageHandler* handler)
 {
@@ -30,7 +33,7 @@ void ConveyorSystem::set_state(json configuration)
 				conn_type = ConveyorConnectionType::SLAVE;
 			}
 
-			if (conn_id != -1) {
+			if (conn_id != EMPTY_CONVEYOR_ID) {
 				conveyor.add_connection(conn_id, conn_type, location);
 				ant_handler->send_conveyor_connect_msg(conveyor_id, conn_id, conn_type, ConveyorLocationType(location));
 			}
@@ -53,8 +56,6 @@ void ConveyorSystem::set_state(json configuration)
 
 void ConveyorSystem::add_destination_box(json ids)
 {
-	//TODO create routing plan to box and send to ant side
-
 	int conveyor_id = ids["conveyor_id"];
 	int box_id = ids["box_id"];
 	int location = ids["box_location"];
@@ -74,6 +75,8 @@ void ConveyorSystem::add_destination_box(json ids)
 
 			std::cout << "\nAdding destination box..." << std::endl;
 			std::cout << conveyors.find(conveyor_id)->second.to_string() << std::endl;
+
+			create_routing_plan(box_id, conveyor_id);
 		}
 
 	}
@@ -249,4 +252,76 @@ Conveyor& ConveyorSystem::get_conveyor_from_box(int box_id) {
 	std::cout << "ConveyorSystem: Could not find matching conveyor to passed box id" << std::endl;
 	// Returning something
 	return conveyors.at(INPUT_CONVEYOR_ID);
+}
+
+std::vector<int> ConveyorSystem::calculate_routing_plan(int target_conveyor)
+{
+	std::set<int> visited = std::set<int>();
+	std::queue<std::pair<int, std::vector<int>>> node_queue;
+
+	std::vector<int> starting_path;
+	starting_path.push_back(INPUT_CONVEYOR_ID);
+	std::pair<int, std::vector<int>> starting_pair(INPUT_CONVEYOR_ID, starting_path);
+	node_queue.push(starting_pair);
+
+	while (!node_queue.empty()) {
+		std::pair<int, std::vector<int>> current_pair = node_queue.front();
+		node_queue.pop();
+		
+		// Check if we have already visited the current node (If two nodes added this one we choose the first path that was already processed)
+		if (visited.find(current_pair.first) != visited.end()) {
+			continue;
+		}
+
+		visited.insert(current_pair.first);
+
+		// Edge case where the input conveyor is also the target
+		if (current_pair.first == target_conveyor) {
+			return current_pair.second;
+		}
+
+		for (auto& conn_pair : conveyors.at(current_pair.first).get_connections()) {
+			int conn_id = conn_pair.first;
+
+			// Only process connections that are not invalid and have not been visited yet
+			if (conn_id < VALID_CONVEYOR_ID_MIN || visited.find(conn_id) != visited.end()) {
+				continue;
+			}
+
+			// Copy the current path
+			std::vector<int> new_path(current_pair.second);
+			new_path.push_back(conn_id);
+
+			// Return if we have reached the target
+			if (conn_id == target_conveyor) {
+				return new_path;
+			}
+
+			std::pair<int, std::vector<int>> new_pair(conn_id, new_path);
+			node_queue.push(new_pair);
+
+		}
+
+	}
+
+	return std::vector<int>();
+}
+
+void ConveyorSystem::create_routing_plan(int box_id, int target_conveyor)
+{
+	std::vector<int> path = calculate_routing_plan(target_conveyor);
+	if (path.empty()) {
+		std::cout << "\nThe path calculated was empty" << std::endl;
+	}
+
+	int prev_conv_id = INPUT_CONVEYOR_ID;
+	for (auto& current_id : path) {
+		if (prev_conv_id == current_id) {
+			continue;
+		}
+		ant_handler->send_routing_plan_msg(prev_conv_id, box_id, current_id);
+
+		prev_conv_id = current_id;
+	}
+	ant_handler->send_routing_plan_msg(path.back(), box_id, path.back());
 }
