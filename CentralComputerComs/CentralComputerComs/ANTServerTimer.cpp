@@ -40,7 +40,7 @@ void ANTServerTimer::operator()()
 
 	bool timeout_occured = false;
 
-	while (!terminate_requested) {
+	while (!terminate_requested || timeout_occured) {
 		auto time_now = std::chrono::steady_clock::now();
 		std::chrono::duration<double> diff = time_now - start_time;
 		if (diff.count() >= ANT_SERVER_TIMER_TIMEOUT_S) {
