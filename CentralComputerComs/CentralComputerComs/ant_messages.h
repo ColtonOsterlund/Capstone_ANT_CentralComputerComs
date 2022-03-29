@@ -1,4 +1,5 @@
 #pragma once
+#define ANT_BACKEND_MSG_MAX_SIZE 8
 
 #define ANT_MSG_HEADER_LENGTH 2
 #define ANT_MSG_CONVEYOR_ID_INDEX 0

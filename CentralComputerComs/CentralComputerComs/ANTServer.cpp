@@ -188,7 +188,7 @@ void ANTServer::send_message_to_driver(ANTMessage& msg, unsigned char time) {
 	timer->start_timer();
 
 	// Add time as well
-	Send_message_to_ANT(msg_arr, msg.get_length() + ANT_MSG_HEADER_LENGTH + 1);
+	Send_message_to_ANT(msg_arr, ANT_BACKEND_MSG_MAX_SIZE);
 	delete[] msg_arr;
 }
 
