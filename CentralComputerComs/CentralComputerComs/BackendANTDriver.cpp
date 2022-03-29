@@ -68,6 +68,7 @@ static UCHAR aucTransmitBuffer[ANT_STANDARD_DATA_PAYLOAD_SIZE];
 static UCHAR ucDeviceNumber;
 static bool bBroadcasting;
 static bool bDisplay;
+static bool timed_out = false;
 
 static UCHAR current_msg_buffer[ANT_STANDARD_DATA_PAYLOAD_SIZE];
 static ANTServer* backend_server = nullptr;
@@ -82,6 +83,9 @@ void Program_Init(UCHAR ucDeviceNumber_);
 void Program_Start();
 void Retry_ACK_send();
 
+void Set_timeout() {
+    timed_out = true;
+}
 
 void Set_backend_ANT_server(ANTServer* server) {
     backend_server = server;
@@ -186,6 +190,10 @@ void Program_Start()
     while (!backend_server->is_terminated())
     {
         // Should we do something in here
+        if (timed_out) {
+            timed_out = false;
+            backend_server->pending_message_timed_out();
+        }
         ANT_Nap(0);
     }
 

@@ -3,6 +3,8 @@
 #include <chrono>
 #include <string>
 
+#include "BackendANTDriver.h"
+
 ANTServerTimer::ANTServerTimer(ANTServer* server) : CentralComputerThread(), server(server), timer_is_running(false) {
 	timer_thread = new std::thread(std::ref(*this));
 }
@@ -56,7 +58,8 @@ void ANTServerTimer::operator()()
 		if (timeout_occured && timer_is_running) {
 			timer_is_running = false;
 			timeout_occured = false;
-			server->pending_message_timed_out();
+			//server->pending_message_timed_out();
+			Set_timeout();
 		}
 		sleep(ANT_SERVER_TIMER_SLEEP_MS);
 	}
