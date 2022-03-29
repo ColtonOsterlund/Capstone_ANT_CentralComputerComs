@@ -131,7 +131,8 @@ void ANTServer::pending_message_timed_out()
 {
 	if (pending_msg != nullptr) {
 		std::cout << "\nMessage timed out\n" << std::endl;
-		send_message_to_driver(*pending_msg, timestamp);
+		ANTMessage msg(pending_msg->get_id(), pending_msg->get_conveyor_id(), pending_msg->get_data(), pending_msg->get_length());
+		send_message_to_driver(msg, timestamp);
 	}
 }
 
