@@ -99,7 +99,7 @@ void Send_message_to_ANT(unsigned char* msg, int length) {
 }
 
 void Retry_ACK_send() {
-    ANT_SendAcknowledgedData(USER_ANTCHANNEL, current_msg_buffer);
+    //ANT_SendAcknowledgedData(USER_ANTCHANNEL, current_msg_buffer);
 }
 
 void Run_driver(unsigned char device_number)
