@@ -25,6 +25,6 @@ public:
 private:
 	ANTServer* server;
 	bool timer_is_running;
-	std::thread timer_thread;
+	std::thread* timer_thread;
 };
 

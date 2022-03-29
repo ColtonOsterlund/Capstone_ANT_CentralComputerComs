@@ -1,8 +1,9 @@
 #include "ANTServerTimer.h"
 
 #include <chrono>
+#include <string>
 
-ANTServerTimer::ANTServerTimer(ANTServer* server) : CentralComputerThread(), server(server), timer_is_running(false), timer_thread() {}
+ANTServerTimer::ANTServerTimer(ANTServer* server) : CentralComputerThread(), server(server), timer_is_running(false), timer_thread(nullptr) {}
 
 void ANTServerTimer::start_timer()
 {
@@ -11,25 +12,30 @@ void ANTServerTimer::start_timer()
 		return;
 	}
 
+	std::cout << "Starting timer" << std::endl;
 	timer_is_running = true;
-	timer_thread = std::thread(std::ref(*this));
+	timer_thread = new std::thread(std::ref(*this));
 }
 
 void ANTServerTimer::stop_timer()
 {
+	std::cout << "Stopping timer" << std::endl;
 	request_termination();
-	if (timer_thread.joinable()) {
-		timer_thread.join();
+	if (timer_thread != nullptr && timer_thread->joinable()) {
+		timer_thread->join();
+		delete timer_thread;
 	}
 }
 
 void ANTServerTimer::reset_timer() {
+	std::cout << "Resetting timer" << std::endl;
 	terminate_requested = false;
 	timer_is_running = false;
 }
 
 void ANTServerTimer::operator()()
 {
+	std::cout << "Timer running in thread" << std::endl;
 	auto start_time = std::chrono::steady_clock::now();
 
 	bool timeout_occured = false;
