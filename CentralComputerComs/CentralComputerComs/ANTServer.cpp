@@ -18,6 +18,8 @@ void ANTServer::operator()()
 {
 	Run_driver(ANT_BACKEND_SERVER_DEVICE_NUMBER);
 	timer->stop_timer();
+	timer->request_termination();
+	timer->join();
 	delete timer;
 }
 

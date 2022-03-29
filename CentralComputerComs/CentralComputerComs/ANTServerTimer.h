@@ -20,6 +20,8 @@ public:
 
 	void reset_timer();
 
+	void join();
+
 	void operator()() override;
 
 private:
