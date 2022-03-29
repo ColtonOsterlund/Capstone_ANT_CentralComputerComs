@@ -6,7 +6,7 @@
 // What a mess. i dont want to spend a lot of time doing function pointers to member functions so we do shortcut
 class ANTServer;
 
-#define ANT_SERVER_TIMER_TIMEOUT_S 1
+#define ANT_SERVER_TIMER_TIMEOUT_S 0.5
 #define ANT_SERVER_TIMER_SLEEP_MS 5
 
 class ANTServerTimer : public CentralComputerThread

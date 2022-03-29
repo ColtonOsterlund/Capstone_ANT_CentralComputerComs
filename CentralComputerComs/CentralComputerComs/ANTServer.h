@@ -31,7 +31,7 @@ private:
 
 	void send_conveyor_state_request(int conveyor_id);
 
-	void send_message_to_driver(ANTMessage& msg);
+	void send_message_to_driver(ANTMessage& msg, unsigned char time);
 
 	void wait_for_message(int msg_id, int conveyor_id);
 
@@ -46,5 +46,6 @@ private:
 	int waiting_msg_id;
 
 	ANTServerTimer* timer;
+	unsigned char timestamp;
 };
 

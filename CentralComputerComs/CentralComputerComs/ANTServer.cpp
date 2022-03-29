@@ -8,7 +8,7 @@
 
 constexpr auto ANT_BACKEND_SERVER_DEVICE_NUMBER = 0;
 
-ANTServer::ANTServer(): queue_handler(nullptr), pending_input_conveyor_msg(nullptr), checking_input_conveyor_ready(false), waiting_for_receive(false), waiting_conveyor_id(EMPTY_CONVEYOR_ID), waiting_msg_id(-1), pending_msg(nullptr), timer(nullptr)
+ANTServer::ANTServer(): queue_handler(nullptr), pending_input_conveyor_msg(nullptr), checking_input_conveyor_ready(false), waiting_for_receive(false), waiting_conveyor_id(EMPTY_CONVEYOR_ID), waiting_msg_id(-1), pending_msg(nullptr), timer(nullptr), timestamp(0)
 {
 	timer = new ANTServerTimer(this);
 	Set_backend_ANT_server(this);
@@ -35,11 +35,11 @@ void ANTServer::send_ANT_message(ANTMessage& msg)
 	}
 	else if (msg.get_id() == CLEAR_BOX_ID) {
 		wait_for_message(CLEAR_BOX_RESPONSE_ID, msg.get_conveyor_id());
-		send_message_to_driver(msg);
+		send_message_to_driver(msg, ++timestamp);
 	}
 	else {
 		wait_for_message(msg.get_id(), msg.get_conveyor_id());
-		send_message_to_driver(msg);
+		send_message_to_driver(msg, ++timestamp);
 	}
 }
 
@@ -128,7 +128,8 @@ void ANTServer::receive_ANT_message(unsigned char* payload)
 void ANTServer::pending_message_timed_out()
 {
 	if (pending_msg != nullptr) {
-		send_message_to_driver(*pending_msg);
+		std::cout << "\nMessage timed out\n" << std::endl;
+		send_message_to_driver(*pending_msg, timestamp);
 	}
 }
 
@@ -138,7 +139,7 @@ void ANTServer::received_input_conveyor_state(int conveyor_id, bool is_available
 		if (is_available) {
 			checking_input_conveyor_ready = false;
 			wait_for_message(ADD_PACKAGE_ID, conveyor_id);
-			send_message_to_driver(*pending_input_conveyor_msg);
+			send_message_to_driver(*pending_input_conveyor_msg, ++timestamp);
 			delete pending_input_conveyor_msg;
 			pending_input_conveyor_msg = nullptr;
 		}
@@ -161,20 +162,20 @@ void ANTServer::send_conveyor_state_request(int conveyor_id)
 	);
 
 	wait_for_message(CONVEYOR_STATE_RESPONSE_ID, conveyor_id);
-	send_message_to_driver(msg);
+	send_message_to_driver(msg, ++timestamp);
 }
 
-void ANTServer::send_message_to_driver(ANTMessage& msg) {
+void ANTServer::send_message_to_driver(ANTMessage& msg, unsigned char time) {
 	if (pending_msg != nullptr) {
 		delete pending_msg;
 	}
 
 	pending_msg = new ANTMessage(msg);
 
-
-	unsigned char* msg_arr = new unsigned char[msg.get_length() + ANT_MSG_HEADER_LENGTH];
+	unsigned char* msg_arr = new unsigned char[8]; //msg.get_length() + ANT_MSG_HEADER_LENGTH];
 	msg_arr[ANT_MSG_CONVEYOR_ID_INDEX] = msg.get_conveyor_id();
 	msg_arr[ANT_MSG_ID_INDEX] = msg.get_id();
+	msg_arr[ANT_MSG_TIMESTAMP_INDEX] = time;
 
 	for (int i = 0; i < msg.get_length(); i++) {
 		msg_arr[ANT_MSG_HEADER_LENGTH + i] = msg.get_data()[i];
