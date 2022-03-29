@@ -170,6 +170,7 @@ void ANTServer::send_conveyor_state_request(int conveyor_id)
 void ANTServer::send_message_to_driver(ANTMessage& msg, unsigned char time) {
 	if (pending_msg != nullptr) {
 		delete pending_msg;
+		pending_msg = nullptr;
 	}
 
 	pending_msg = new ANTMessage(msg);
