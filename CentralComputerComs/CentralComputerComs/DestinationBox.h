@@ -5,7 +5,7 @@
 
 #include "central_computer_types.h"
 
-#define DESTINATION_BOX_SIZE 5
+#define DESTINATION_BOX_SIZE 4
 
 class DestinationBox
 {
