@@ -28,7 +28,7 @@ All rights reserved.
 #define USER_BAUDRATE            (57600)  // For AP1, use 50000; for AT3/AP2, use 57600
 #define USER_RADIOFREQ           (66)     // RF Frequency + 2400 MHz
 
-#define USER_ANTCHANNEL          (0)      // ANT channel to use
+#define USER_ANTCHANNEL          (7)      // ANT channel to use
 #define USER_DEVICENUM           (0)     // Device number
 #define USER_DEVICETYPE          (3)      // Device type
 #define USER_TRANSTYPE           (2)      // 2 = 1-Byte Shared Address Transmission type
